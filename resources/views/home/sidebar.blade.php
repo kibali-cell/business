@@ -33,7 +33,7 @@
                       <a class="nav-link" href="{{ route('crm.customers.index') }}">Customers</a>
                     </li>
                     <li class="nav-item">
-                      <a class="nav-link" href="#">Companies</a> <!-- Add this later -->
+                      <a class="nav-link" href="{{ route('crm.companies.index') }}">Companies</a> 
                     </li>
                   </ul>
                 </div>
