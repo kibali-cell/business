@@ -6,6 +6,7 @@ use Illuminate\Support\Facades\Route;
 
 use App\Http\Controllers\CRM\CustomerController;
 use App\Http\Controllers\CRM\CompanyController;
+use App\Http\Controllers\CRM\TaskController;
 
 // Redirect unauthenticated users to the login page before showing the home page.
 Route::get('/', [HomeController::class, 'index'])
@@ -24,6 +25,7 @@ Route::get('/admin', function () {
 //     Route::resource('crm/customers', CustomerController::class);
 //     Route::resource('crm/companies', CompanyController::class);
 // });
+
 
 Route::middleware('auth')->group(function () {
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');

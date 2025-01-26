@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\CRM\CompanyController;
 use App\Http\Controllers\CRM\CustomerController;
+use App\Http\Controllers\CRM\TaskController;
 use Illuminate\Support\Facades\Route;
 
 Route::middleware('auth')->group(function () {
@@ -26,5 +27,19 @@ Route::middleware('auth')->group(function () {
             'update' => 'crm.companies.update',
             'destroy' => 'crm.companies.destroy',
         ]);
+
+        Route::resource('tasks', TaskController::class)->names([
+            'index' => 'crm.tasks.index',
+            'create' => 'crm.tasks.create',
+            'store' => 'crm.tasks.store',
+            'show' => 'crm.tasks.show',
+            'edit' => 'crm.tasks.edit',
+            'update' => 'crm.tasks.update',
+            'destroy' => 'crm.tasks.destroy',
+        ]);
+
+        Route::put('/crm/tasks/{task}/update-status', [TaskController::class, 'updateStatus'])->name('crm.tasks.update-status');
     });
 });
+
+
