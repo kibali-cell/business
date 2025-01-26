@@ -15,8 +15,6 @@
         <!-- partial -->
         @include('home.body')
 
-        </div>
-
     @include('home.script')
   </body>
 </html>

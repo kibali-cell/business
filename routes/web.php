@@ -4,6 +4,9 @@ use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\HomeController;
 use Illuminate\Support\Facades\Route;
 
+use App\Http\Controllers\CRM\CustomerController;
+use App\Http\Controllers\CRM\CompanyController;
+
 // Redirect unauthenticated users to the login page before showing the home page.
 Route::get('/', [HomeController::class, 'index'])
     ->middleware('auth')
@@ -12,6 +15,15 @@ Route::get('/', [HomeController::class, 'index'])
 Route::get('/dashboard', function () {
     return view('dashboard');
 })->middleware(['auth', 'verified'])->name('dashboard');
+
+Route::get('/admin', function () {
+    return 'Admin Dashboard';
+})->middleware(['auth', 'role:admin']);
+
+// Route::middleware('auth')->group(function () {
+//     Route::resource('crm/customers', CustomerController::class);
+//     Route::resource('crm/companies', CompanyController::class);
+// });
 
 Route::middleware('auth')->group(function () {
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
@@ -25,3 +37,7 @@ Route::post('/logout', function () {
 })->name('logout');
 
 require __DIR__.'/auth.php';
+require __DIR__.'/modules/crm.php';
+
+
+

@@ -22,26 +22,31 @@
               </div>
             </li>
             <li class="nav-item">
-              <a class="nav-link" data-bs-toggle="collapse" href="#form-elements" aria-expanded="false" aria-controls="form-elements">
-                <i class="menu-icon mdi mdi-card-text-outline"></i>
-                <span class="menu-title">Form elements</span>
-                <i class="menu-arrow"></i>
-              </a>
-              <div class="collapse" id="form-elements">
-                <ul class="nav flex-column sub-menu">
-                  <li class="nav-item"><a class="nav-link" href="pages/forms/basic_elements.html">Basic Elements</a></li>
-                </ul>
-              </div>
+                <a class="nav-link" data-bs-toggle="collapse" href="#crm" aria-expanded="false" aria-controls="crm">
+                  <i class="menu-icon mdi mdi-account-multiple"></i>
+                  <span class="menu-title">CRM</span>
+                  <i class="menu-arrow"></i>
+                </a>
+                <div class="collapse" id="crm">
+                  <ul class="nav flex-column sub-menu">
+                    <li class="nav-item">
+                      <a class="nav-link" href="{{ route('crm.customers.index') }}">Customers</a>
+                    </li>
+                    <li class="nav-item">
+                      <a class="nav-link" href="#">Companies</a> <!-- Add this later -->
+                    </li>
+                  </ul>
+                </div>
             </li>
             <li class="nav-item">
               <a class="nav-link" data-bs-toggle="collapse" href="#charts" aria-expanded="false" aria-controls="charts">
                 <i class="menu-icon mdi mdi-chart-line"></i>
-                <span class="menu-title">Charts</span>
+                <span class="menu-title">Tasks</span>
                 <i class="menu-arrow"></i>
               </a>
               <div class="collapse" id="charts">
                 <ul class="nav flex-column sub-menu">
-                  <li class="nav-item"> <a class="nav-link" href="pages/charts/chartjs.html">ChartJs</a></li>
+                  <li class="nav-item"> <a class="nav-link" href="#">Tasks</a></li>
                 </ul>
               </div>
             </li>
