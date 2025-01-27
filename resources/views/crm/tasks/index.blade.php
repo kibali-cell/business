@@ -2,6 +2,10 @@
 <html lang="en">
   <head>
     @include('home.css')
+    <!-- Include Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Include Font Awesome for Icons -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
     <!-- Include SortableJS -->
     <script src="https://cdn.jsdelivr.net/npm/sortablejs@latest/Sortable.min.js"></script>
   </head>
@@ -16,105 +20,120 @@
         <!-- partial -->
 
         <div class="container-fluid">
+          <div class="d-flex justify-content-between align-items-center mb-4">
+            <h2>Task Board</h2>
+            <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#createTaskModal">
+              <i class="fas fa-plus"></i> Add Task
+            </button>
+          </div>
+
           <div class="row">
-            <div class="col-md-12">
+            <!-- Pending Tasks Column -->
+            <div class="col-md-4 mb-3">
               <div class="card">
-                <div class="card-header bg-primary text-white d-flex justify-content-between align-items-center">
-                  <h2 class="mb-0">Tasks</h2>
-                  <button type="button" class="btn btn-light" data-bs-toggle="modal" data-bs-target="#createTaskModal">
-                    <i class="mdi mdi-plus"></i> Add Task
-                  </button>
+                <div class="card-header bg-secondary text-white">
+                  Pending Tasks
                 </div>
                 <div class="card-body">
-                  @if(session('success'))
-                    <div class="alert alert-success">
-                      {{ session('success') }}
-                    </div>
-                  @endif
+                  <div class="task-list" id="pending" data-status="pending">
+                    @foreach($tasks->where('status', 'pending') as $task)
+                      <div class="card mb-3" data-task-id="{{ $task->id }}">
+                        <div class="card-body">
+                          <h5 class="card-title">{{ $task->title }}</h5>
+                          <p class="card-text">{{ $task->description }}</p>
+                          <small class="text-muted">Due: {{ $task->due_date ? $task->due_date->format('M d, Y') : 'No due date' }}</small>
+                          <div class="mt-2">
+                            <small class="text-muted">Assigned to: {{ $task->assignedUser->name }}</small>
+                          </div>
+                          <div class="mt-2">
+                            <button class="btn btn-sm btn-info" data-bs-toggle="modal" data-bs-target="#editTaskModal{{ $task->id }}">
+                              <i class="fas fa-edit"></i> Edit
+                            </button>
+                            <form action="{{ route('crm.tasks.destroy', $task->id) }}" method="POST" style="display:inline;">
+                              @csrf
+                              @method('DELETE')
+                              <button type="submit" class="btn btn-sm btn-danger" onclick="return confirm('Are you sure?')">
+                                <i class="fas fa-trash"></i> Delete
+                              </button>
+                            </form>
+                          </div>
+                        </div>
+                      </div>
+                    @endforeach
+                  </div>
+                </div>
+              </div>
+            </div>
 
-                  <!-- Task Boards with SortableJS -->
-                  <div class="row">
-                    <div class="col-md-4">
-                      <h4>To Do</h4>
-                      <div id="todo" class="task-list">
-                        @foreach ($tasks->where('status', 'pending') as $task)
-                          <div class="card mb-2" data-task-id="{{ $task->id }}">
-                            <div class="card-body">
-                              <h5>{{ $task->title }}</h5>
-                              <p>{{ $task->description }}</p>
-                              <small>Assigned to: {{ $task->assignedUser->name }}</small>
-                              <small>Due Date: {{ $task->due_date ? $task->due_date->format('Y-m-d') : 'N/A' }}</small>
-                              <div class="mt-2">
-                                <button class="btn btn-sm btn-info" data-bs-toggle="modal" data-bs-target="#editTaskModal{{ $task->id }}">
-                                  <i class="mdi mdi-pencil"></i> Edit
-                                </button>
-                                <form action="{{ route('crm.tasks.destroy', $task->id) }}" method="POST" style="display:inline;">
-                                  @csrf
-                                  @method('DELETE')
-                                  <button type="submit" class="btn btn-sm btn-danger" onclick="return confirm('Are you sure?')">
-                                    <i class="mdi mdi-delete"></i> Delete
-                                  </button>
-                                </form>
-                              </div>
-                            </div>
+            <!-- In Progress Column -->
+            <div class="col-md-4 mb-3">
+              <div class="card">
+                <div class="card-header bg-primary text-white">
+                  In Progress
+                </div>
+                <div class="card-body">
+                  <div class="task-list" id="in_progress" data-status="in_progress">
+                    @foreach($tasks->where('status', 'in_progress') as $task)
+                      <div class="card mb-3" data-task-id="{{ $task->id }}">
+                        <div class="card-body">
+                          <h5 class="card-title">{{ $task->title }}</h5>
+                          <p class="card-text">{{ $task->description }}</p>
+                          <small class="text-muted">Due: {{ $task->due_date ? $task->due_date->format('M d, Y') : 'No due date' }}</small>
+                          <div class="mt-2">
+                            <small class="text-muted">Assigned to: {{ $task->assignedUser->name }}</small>
                           </div>
-                        @endforeach
-                      </div>
-                    </div>
-                    <div class="col-md-4">
-                      <h4>In Progress</h4>
-                      <div id="in_progress" class="task-list">
-                        @foreach ($tasks->where('status', 'in_progress') as $task)
-                          <div class="card mb-2" data-task-id="{{ $task->id }}">
-                            <div class="card-body">
-                              <h5>{{ $task->title }}</h5>
-                              <p>{{ $task->description }}</p>
-                              <small>Assigned to: {{ $task->assignedUser->name }}</small>
-                              <small>Due Date: {{ $task->due_date ? $task->due_date->format('Y-m-d') : 'N/A' }}</small>
-                              <div class="mt-2">
-                                <button class="btn btn-sm btn-info" data-bs-toggle="modal" data-bs-target="#editTaskModal{{ $task->id }}">
-                                  <i class="mdi mdi-pencil"></i> Edit
-                                </button>
-                                <form action="{{ route('crm.tasks.destroy', $task->id) }}" method="POST" style="display:inline;">
-                                  @csrf
-                                  @method('DELETE')
-                                  <button type="submit" class="btn btn-sm btn-danger" onclick="return confirm('Are you sure?')">
-                                    <i class="mdi mdi-delete"></i> Delete
-                                  </button>
-                                </form>
-                              </div>
-                            </div>
+                          <div class="mt-2">
+                            <button class="btn btn-sm btn-info" data-bs-toggle="modal" data-bs-target="#editTaskModal{{ $task->id }}">
+                              <i class="fas fa-edit"></i> Edit
+                            </button>
+                            <form action="{{ route('crm.tasks.destroy', $task->id) }}" method="POST" style="display:inline;">
+                              @csrf
+                              @method('DELETE')
+                              <button type="submit" class="btn btn-sm btn-danger" onclick="return confirm('Are you sure?')">
+                                <i class="fas fa-trash"></i> Delete
+                              </button>
+                            </form>
                           </div>
-                        @endforeach
+                        </div>
                       </div>
-                    </div>
-                    <div class="col-md-4">
-                      <h4>Done</h4>
-                      <div id="done" class="task-list">
-                        @foreach ($tasks->where('status', 'completed') as $task)
-                          <div class="card mb-2" data-task-id="{{ $task->id }}">
-                            <div class="card-body">
-                              <h5>{{ $task->title }}</h5>
-                              <p>{{ $task->description }}</p>
-                              <small>Assigned to: {{ $task->assignedUser->name }}</small>
-                              <small>Due Date: {{ $task->due_date ? $task->due_date->format('Y-m-d') : 'N/A' }}</small>
-                              <div class="mt-2">
-                                <button class="btn btn-sm btn-info" data-bs-toggle="modal" data-bs-target="#editTaskModal{{ $task->id }}">
-                                  <i class="mdi mdi-pencil"></i> Edit
-                                </button>
-                                <form action="{{ route('crm.tasks.destroy', $task->id) }}" method="POST" style="display:inline;">
-                                  @csrf
-                                  @method('DELETE')
-                                  <button type="submit" class="btn btn-sm btn-danger" onclick="return confirm('Are you sure?')">
-                                    <i class="mdi mdi-delete"></i> Delete
-                                  </button>
-                                </form>
-                              </div>
-                            </div>
+                    @endforeach
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Completed Column -->
+            <div class="col-md-4 mb-3">
+              <div class="card">
+                <div class="card-header bg-success text-white">
+                  Completed
+                </div>
+                <div class="card-body">
+                  <div class="task-list" id="completed" data-status="completed">
+                    @foreach($tasks->where('status', 'completed') as $task)
+                      <div class="card mb-3" data-task-id="{{ $task->id }}">
+                        <div class="card-body">
+                          <h5 class="card-title">{{ $task->title }}</h5>
+                          <p class="card-text">{{ $task->description }}</p>
+                          <small class="text-muted">Due: {{ $task->due_date ? $task->due_date->format('M d, Y') : 'No due date' }}</small>
+                          <div class="mt-2">
+                            <small class="text-muted">Assigned to: {{ $task->assignedUser->name }}</small>
                           </div>
-                        @endforeach
+                          <div class="mt-2">
+                            <button class="btn btn-sm btn-info" data-bs-toggle="modal" data-bs-target="#editTaskModal{{ $task->id }}">
+                              <i class="fas fa-edit"></i> Edit
+                            </button>
+                            <form action="{{ route('crm.tasks.destroy', $task->id) }}" method="POST" style="display:inline;">
+                              @csrf
+                              @method('DELETE')
+                              <button type="submit" class="btn btn-sm btn-danger" onclick="return confirm('Are you sure?')">
+                                <i class="fas fa-trash"></i> Delete
+                              </button>
+                            </form>
+                          </div>
+                        </div>
                       </div>
-                    </div>
+                    @endforeach
                   </div>
                 </div>
               </div>
