@@ -58,25 +58,25 @@
                               @endif
                             </td>
                             <td>
-                            <button type="button" class="btn btn-sm btn-warning" data-bs-toggle="modal" data-bs-target="#editCompanyModal" 
-                                    data-id="{{ $company->id }}" 
-                                    data-name="{{ $company->name }}" 
-                                    data-email="{{ $company->email }}" 
-                                    data-phone="{{ $company->phone }}" 
-                                    data-address="{{ $company->address }}"
-                                    data-website="{{ $company->website }}"> <!-- Add this line -->
-                              Edit
-                            </button>
+                              <button type="button" class="btn btn-sm btn-warning" data-bs-toggle="modal" data-bs-target="#editCompanyModal" 
+                                      data-id="{{ $company->id }}" 
+                                      data-name="{{ $company->name }}" 
+                                      data-email="{{ $company->email }}" 
+                                      data-phone="{{ $company->phone }}" 
+                                      data-address="{{ $company->address }}"
+                                      data-website="{{ $company->website }}"> <!-- Add this line -->
+                                Edit
+                              </button>
 
-                            <button type="button" class="btn btn-sm btn-info" data-bs-toggle="modal" data-bs-target="#viewCompanyModal" 
-                                    data-name="{{ $company->name }}" 
-                                    data-email="{{ $company->email }}" 
-                                    data-phone="{{ $company->phone }}" 
-                                    data-address="{{ $company->address }}"
-                                    data-website="{{ $company->website }}"> <!-- Add this line -->
-                              View
-                            </button>
-                            
+                              <button type="button" class="btn btn-sm btn-info" data-bs-toggle="modal" data-bs-target="#viewCompanyModal" 
+                                      data-name="{{ $company->name }}" 
+                                      data-email="{{ $company->email }}" 
+                                      data-phone="{{ $company->phone }}" 
+                                      data-address="{{ $company->address }}"
+                                      data-website="{{ $company->website }}"> <!-- Add this line -->
+                                View
+                              </button>
+                              
                               <form action="{{ route('crm.companies.destroy', $company->id) }}" method="POST" class="d-inline">
                                 @csrf
                                 @method('DELETE')
@@ -165,13 +165,7 @@
             </div>
             <div class="mb-3">
               <label class="form-label"><strong>Website:</strong></label>
-              <p id="view-company-website" class="mb-0">
-                @if ($company->website)
-                  <a href="{{ $company->website }}" target="_blank">{{ $company->website }}</a>
-                @else
-                  N/A
-                @endif
-              </p>
+              <p id="view-company-website" class="mb-0"></p>
             </div>
           </div>
           <div class="modal-footer">
@@ -211,8 +205,8 @@
                 <input type="text" class="form-control" id="edit-company-address" name="address">
               </div>
               <div class="mb-3">
-                <label for="website" class="form-label">Website</label>
-                <input type="url" class="form-control" id="website" name="website" value="{{ $company->website }}">
+                <label for="edit-company-website" class="form-label">Website</label>
+                <input type="url" class="form-control" id="edit-company-website" name="website">
               </div>
               <div class="modal-footer">
                 <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
@@ -233,12 +227,21 @@
         const email = button.getAttribute('data-email');
         const phone = button.getAttribute('data-phone');
         const address = button.getAttribute('data-address');
+        const website = button.getAttribute('data-website');
 
         // Update modal content
         document.getElementById('view-company-name').textContent = name;
         document.getElementById('view-company-email').textContent = email;
         document.getElementById('view-company-phone').textContent = phone;
         document.getElementById('view-company-address').textContent = address;
+
+        // Update website content
+        const websiteElement = document.getElementById('view-company-website');
+        if (website) {
+          websiteElement.innerHTML = `<a href="${website}" target="_blank">${website}</a>`;
+        } else {
+          websiteElement.textContent = 'N/A';
+        }
       });
 
       // Edit Company Modal
@@ -249,7 +252,7 @@
         const email = button.getAttribute('data-email');
         const phone = button.getAttribute('data-phone');
         const address = button.getAttribute('data-address');
-        const website = button.getAttribute('data-website');        
+        const website = button.getAttribute('data-website');
 
         // Update modal content
         document.getElementById('edit-company-name').value = name;
