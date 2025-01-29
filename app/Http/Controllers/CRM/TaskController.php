@@ -24,7 +24,8 @@ class TaskController extends Controller
     {
         $tasks = Task::with('assignedUser')->paginate(15); // Corrected: Removed ->get()
         $users = User::all(); // Fetch all users for the assignee dropdown
-        return view('crm.tasks.index', compact('tasks', 'users'));
+        $templates = TaskTemplate::all(); // Fetch all task templates
+        return view('crm.tasks.index', compact('templates','tasks', 'users'));
     }
 
     // Show the form for creating a new task
@@ -41,12 +42,14 @@ class TaskController extends Controller
         $request->validate([
             'title' => 'required|string|max:255',
             'description' => 'nullable|string',
+            'checklist' => 'array',
             'status' => 'required|in:pending,in_progress,completed',
             'assigned_to' => 'nullable|exists:users,id',
             'due_date' => 'nullable|date',
             'priority' => 'required|in:low,medium,high',
             'template_id' => 'nullable|exists:task_templates,id',
         ]);
+
 
         // Use TaskService to handle task creation (including automatic assignment)
         $task = $this->taskService->assignTaskAutomatically($request->all());
@@ -117,6 +120,7 @@ class TaskController extends Controller
         return view('crm.tasks.create', [
             'users' => $users,
             'template' => $template,
+            'checklist' => $template->checklist,
         ]);
     }
 }

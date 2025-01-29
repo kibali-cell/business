@@ -3,6 +3,7 @@
 namespace App\Services;
 
 use App\Models\Task;
+use App\Models\TaskTemplate;
 use App\Models\User;
 
 class TaskService
@@ -24,6 +25,15 @@ class TaskService
 
         // Assign the task to the selected user
         $taskData['assigned_to'] = $user->id;
+
+        if (!empty($taskData['template_id'])) {
+            $template = TaskTemplate::find($taskData['template_id']);
+            $taskData = array_merge($taskData, [
+                'title' => $template->name,
+                'description' => $template->description,
+                'checklist' => $template->checklist
+            ]);
+        }
 
         // Create and return the task
         return Task::create($taskData);

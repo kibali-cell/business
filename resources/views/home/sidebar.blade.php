@@ -47,6 +47,7 @@
               <div class="collapse" id="charts">
                 <ul class="nav flex-column sub-menu">
                   <li class="nav-item"> <a class="nav-link" href="{{ route('crm.tasks.index') }}">Tasks</a></li>
+                  <li class="nav-item"> <a class="nav-link" href="{{ route('crm.task-templates.index') }}">Templates</a></li>
                 </ul>
               </div>
             </li>

@@ -39,6 +39,18 @@ Route::middleware('auth')->group(function () {
         ]);
 
         Route::put('/crm/tasks/{task}/update-status', [TaskController::class, 'updateStatus'])->name('crm.tasks.update-status');
+
+        // Add these to your existing CRM group
+        Route::resource('task-templates', \App\Http\Controllers\CRM\TaskTemplateController::class)->names([
+            'index' => 'crm.task-templates.index',
+            'create' => 'crm.task-templates.create',
+            'store' => 'crm.task-templates.store',
+            'show' => 'crm.task-templates.show',
+            'destroy' => 'crm.task-templates.destroy',
+        ]);
+
+        Route::get('/crm/task-templates/{template}', [\App\Http\Controllers\CRM\TaskTemplateController::class, 'show'])
+    ->name('crm.task-templates.show');
     });
 });
 

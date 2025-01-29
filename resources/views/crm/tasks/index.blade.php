@@ -2,22 +2,58 @@
 <html lang="en">
   <head>
     @include('home.css')
-    <!-- Include Bootstrap CSS -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-    <!-- Include Font Awesome for Icons -->
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
-    <!-- Include SortableJS -->
     <script src="https://cdn.jsdelivr.net/npm/sortablejs@latest/Sortable.min.js"></script>
+    <style>
+      .task-card {
+          border-radius: 8px;
+          border: 1px solid rgba(0,0,0,.125);
+          transition: transform 0.15s ease-in-out;
+      }
+
+      .task-card:hover {
+          transform: translateY(-2px);
+      }
+
+      .task-card .badge {
+          font-weight: normal;
+          font-size: 0.75rem;
+          padding: 0.25em 0.75em;
+      }
+
+      .task-card .card-title {
+          font-weight: 500;
+          line-height: 1.2;
+      }
+
+      .task-card .btn-light {
+          background-color: #f8f9fa;
+          border: 1px solid #dee2e6;
+      }
+
+      .dropdown-menu {
+          font-size: 0.875rem;
+          min-width: 8rem;
+      }
+
+      .dropdown-item {
+          padding: 0.4rem 1rem;
+      }
+
+      .dropdown-item i {
+          width: 1rem;
+          text-align: center;
+          margin-right: 0.5rem;
+      }
+    </style>
   </head>
   <body class="with-welcome-text">
     <div class="container-scroller">
-      <!-- partial:partials/_navbar.html -->
       @include('home.header')
-      <!-- partial -->
+      
       <div class="container-fluid page-body-wrapper">
-        <!-- partial:partials/_sidebar.html -->
         @include('home.sidebar')
-        <!-- partial -->
 
         <div class="container-fluid">
           <div class="d-flex justify-content-between align-items-center mb-4">
@@ -37,28 +73,59 @@
                 <div class="card-body">
                   <div class="task-list" id="pending" data-status="pending">
                     @foreach($tasks->where('status', 'pending') as $task)
-                      <div class="card mb-3" data-task-id="{{ $task->id }}">
-                        <div class="card-body">
-                          <h5 class="card-title">{{ $task->title }}</h5>
-                          <p class="card-text">{{ $task->description }}</p>
-                          <small class="text-muted">Due: {{ $task->due_date ? $task->due_date->format('M d, Y') : 'No due date' }}</small>
-                          <div class="mt-2">
-                            <small class="text-muted">Assigned to: {{ $task->assignedUser->name }}</small>
-                          </div>
-                          <div class="mt-2">
-                            <button class="btn btn-sm btn-info" data-bs-toggle="modal" data-bs-target="#editTaskModal{{ $task->id }}">
-                              <i class="fas fa-edit"></i> Edit
-                            </button>
-                            <form action="{{ route('crm.tasks.destroy', $task->id) }}" method="POST" style="display:inline;">
-                              @csrf
-                              @method('DELETE')
-                              <button type="submit" class="btn btn-sm btn-danger" onclick="return confirm('Are you sure?')">
-                                <i class="fas fa-trash"></i> Delete
-                              </button>
-                            </form>
-                          </div>
+                    <div class="card mb-2 shadow-sm task-card" data-task-id="{{ $task->id }}">
+                        <div class="card-body p-3">
+                            <h5 class="card-title fs-6 mb-2">{{ $task->title }}</h5>
+                            <p class="card-text text-muted small mb-3">{{ Str::limit($task->description, 100) }}</p>
+                            
+                            <div class="d-flex justify-content-between align-items-center mb-3">
+                                <span class="badge rounded-pill bg-{{ $task->priority === 'high' ? 'danger' : ($task->priority === 'medium' ? 'warning' : 'info') }}">
+                                    {{ ucfirst($task->priority) }}
+                                </span>
+                                <small class="text-muted">Due: {{ $task->due_date ? $task->due_date->format('M d, Y') : 'No due date' }}</small>
+                            </div>
+
+                            @if($task->documents && $task->documents->count() > 0)
+                                <div class="mb-3">
+                                    <div class="text-muted small">Attachments</div>
+                                    <div class="mt-2">
+                                        @foreach($task->documents as $document)
+                                            <div class="document-item d-flex align-items-center gap-2 mb-1">
+                                                <a href="{{ Storage::url($document->path) }}" target="_blank" class="text-decoration-none small">
+                                                    {{ $document->filename }}
+                                                </a>
+                                            </div>
+                                        @endforeach
+                                    </div>
+                                </div>
+                            @endif
+                            
+                            <div class="d-flex justify-content-between align-items-center">
+                                <small class="text-muted">Assigned to: {{ $task->assignedUser->name }}</small>
+                                <div class="dropdown">
+                                    <button class="btn btn-sm btn-light dropdown-toggle px-2 py-1" type="button" data-bs-toggle="dropdown">
+                                        Actions
+                                    </button>
+                                    <ul class="dropdown-menu dropdown-menu-end">
+                                        <li>
+                                            <a class="dropdown-item small" href="#" data-bs-toggle="modal" data-bs-target="#editTaskModal{{ $task->id }}">
+                                                <i class="fas fa-edit"></i> Edit
+                                            </a>
+                                        </li>
+                                        <li>
+                                            <form action="{{ route('crm.tasks.destroy', $task->id) }}" method="POST" class="d-inline">
+                                                @csrf
+                                                @method('DELETE')
+                                                <button type="submit" class="dropdown-item small text-danger" onclick="return confirm('Are you sure?')">
+                                                    <i class="fas fa-trash"></i> Delete
+                                                </button>
+                                            </form>
+                                        </li>
+                                    </ul>
+                                </div>
+                            </div>
                         </div>
-                      </div>
+                    </div>
                     @endforeach
                   </div>
                 </div>
@@ -74,28 +141,59 @@
                 <div class="card-body">
                   <div class="task-list" id="in_progress" data-status="in_progress">
                     @foreach($tasks->where('status', 'in_progress') as $task)
-                      <div class="card mb-3" data-task-id="{{ $task->id }}">
-                        <div class="card-body">
-                          <h5 class="card-title">{{ $task->title }}</h5>
-                          <p class="card-text">{{ $task->description }}</p>
-                          <small class="text-muted">Due: {{ $task->due_date ? $task->due_date->format('M d, Y') : 'No due date' }}</small>
-                          <div class="mt-2">
-                            <small class="text-muted">Assigned to: {{ $task->assignedUser->name }}</small>
-                          </div>
-                          <div class="mt-2">
-                            <button class="btn btn-sm btn-info" data-bs-toggle="modal" data-bs-target="#editTaskModal{{ $task->id }}">
-                              <i class="fas fa-edit"></i> Edit
-                            </button>
-                            <form action="{{ route('crm.tasks.destroy', $task->id) }}" method="POST" style="display:inline;">
-                              @csrf
-                              @method('DELETE')
-                              <button type="submit" class="btn btn-sm btn-danger" onclick="return confirm('Are you sure?')">
-                                <i class="fas fa-trash"></i> Delete
-                              </button>
-                            </form>
-                          </div>
+                    <div class="card mb-2 shadow-sm task-card" data-task-id="{{ $task->id }}">
+                        <div class="card-body p-3">
+                            <h5 class="card-title fs-6 mb-2">{{ $task->title }}</h5>
+                            <p class="card-text text-muted small mb-3">{{ Str::limit($task->description, 100) }}</p>
+                            
+                            <div class="d-flex justify-content-between align-items-center mb-3">
+                                <span class="badge rounded-pill bg-{{ $task->priority === 'high' ? 'danger' : ($task->priority === 'medium' ? 'warning' : 'info') }}">
+                                    {{ ucfirst($task->priority) }}
+                                </span>
+                                <small class="text-muted">Due: {{ $task->due_date ? $task->due_date->format('M d, Y') : 'No due date' }}</small>
+                            </div>
+
+                            @if($task->documents && $task->documents->count() > 0)
+                                <div class="mb-3">
+                                    <div class="text-muted small">Attachments</div>
+                                    <div class="mt-2">
+                                        @foreach($task->documents as $document)
+                                            <div class="document-item d-flex align-items-center gap-2 mb-1">
+                                                <a href="{{ Storage::url($document->path) }}" target="_blank" class="text-decoration-none small">
+                                                    {{ $document->filename }}
+                                                </a>
+                                            </div>
+                                        @endforeach
+                                    </div>
+                                </div>
+                            @endif
+                            
+                            <div class="d-flex justify-content-between align-items-center">
+                                <small class="text-muted">Assigned to: {{ $task->assignedUser->name }}</small>
+                                <div class="dropdown">
+                                    <button class="btn btn-sm btn-light dropdown-toggle px-2 py-1" type="button" data-bs-toggle="dropdown">
+                                        Actions
+                                    </button>
+                                    <ul class="dropdown-menu dropdown-menu-end">
+                                        <li>
+                                            <a class="dropdown-item small" href="#" data-bs-toggle="modal" data-bs-target="#editTaskModal{{ $task->id }}">
+                                                <i class="fas fa-edit"></i> Edit
+                                            </a>
+                                        </li>
+                                        <li>
+                                            <form action="{{ route('crm.tasks.destroy', $task->id) }}" method="POST" class="d-inline">
+                                                @csrf
+                                                @method('DELETE')
+                                                <button type="submit" class="dropdown-item small text-danger" onclick="return confirm('Are you sure?')">
+                                                    <i class="fas fa-trash"></i> Delete
+                                                </button>
+                                            </form>
+                                        </li>
+                                    </ul>
+                                </div>
+                            </div>
                         </div>
-                      </div>
+                    </div>
                     @endforeach
                   </div>
                 </div>
@@ -111,28 +209,59 @@
                 <div class="card-body">
                   <div class="task-list" id="completed" data-status="completed">
                     @foreach($tasks->where('status', 'completed') as $task)
-                      <div class="card mb-3" data-task-id="{{ $task->id }}">
-                        <div class="card-body">
-                          <h5 class="card-title">{{ $task->title }}</h5>
-                          <p class="card-text">{{ $task->description }}</p>
-                          <small class="text-muted">Due: {{ $task->due_date ? $task->due_date->format('M d, Y') : 'No due date' }}</small>
-                          <div class="mt-2">
-                            <small class="text-muted">Assigned to: {{ $task->assignedUser->name }}</small>
-                          </div>
-                          <div class="mt-2">
-                            <button class="btn btn-sm btn-info" data-bs-toggle="modal" data-bs-target="#editTaskModal{{ $task->id }}">
-                              <i class="fas fa-edit"></i> Edit
-                            </button>
-                            <form action="{{ route('crm.tasks.destroy', $task->id) }}" method="POST" style="display:inline;">
-                              @csrf
-                              @method('DELETE')
-                              <button type="submit" class="btn btn-sm btn-danger" onclick="return confirm('Are you sure?')">
-                                <i class="fas fa-trash"></i> Delete
-                              </button>
-                            </form>
-                          </div>
+                    <div class="card mb-2 shadow-sm task-card" data-task-id="{{ $task->id }}">
+                        <div class="card-body p-3">
+                            <h5 class="card-title fs-6 mb-2">{{ $task->title }}</h5>
+                            <p class="card-text text-muted small mb-3">{{ Str::limit($task->description, 100) }}</p>
+                            
+                            <div class="d-flex justify-content-between align-items-center mb-3">
+                                <span class="badge rounded-pill bg-{{ $task->priority === 'high' ? 'danger' : ($task->priority === 'medium' ? 'warning' : 'info') }}">
+                                    {{ ucfirst($task->priority) }}
+                                </span>
+                                <small class="text-muted">Due: {{ $task->due_date ? $task->due_date->format('M d, Y') : 'No due date' }}</small>
+                            </div>
+
+                            @if($task->documents && $task->documents->count() > 0)
+                                <div class="mb-3">
+                                    <div class="text-muted small">Attachments</div>
+                                    <div class="mt-2">
+                                        @foreach($task->documents as $document)
+                                            <div class="document-item d-flex align-items-center gap-2 mb-1">
+                                                <a href="{{ Storage::url($document->path) }}" target="_blank" class="text-decoration-none small">
+                                                    {{ $document->filename }}
+                                                </a>
+                                            </div>
+                                        @endforeach
+                                    </div>
+                                </div>
+                            @endif
+                            
+                            <div class="d-flex justify-content-between align-items-center">
+                                <small class="text-muted">Assigned to: {{ $task->assignedUser->name }}</small>
+                                <div class="dropdown">
+                                    <button class="btn btn-sm btn-light dropdown-toggle px-2 py-1" type="button" data-bs-toggle="dropdown">
+                                        Actions
+                                    </button>
+                                    <ul class="dropdown-menu dropdown-menu-end">
+                                        <li>
+                                            <a class="dropdown-item small" href="#" data-bs-toggle="modal" data-bs-target="#editTaskModal{{ $task->id }}">
+                                                <i class="fas fa-edit"></i> Edit
+                                            </a>
+                                        </li>
+                                        <li>
+                                            <form action="{{ route('crm.tasks.destroy', $task->id) }}" method="POST" class="d-inline">
+                                                @csrf
+                                                @method('DELETE')
+                                                <button type="submit" class="dropdown-item small text-danger" onclick="return confirm('Are you sure?')">
+                                                    <i class="fas fa-trash"></i> Delete
+                                                </button>
+                                            </form>
+                                        </li>
+                                    </ul>
+                                </div>
+                            </div>
                         </div>
-                      </div>
+                    </div>
                     @endforeach
                   </div>
                 </div>
@@ -159,6 +288,11 @@
                   <div class="mb-3">
                     <label for="description" class="form-label">Description</label>
                     <textarea class="form-control" id="description" name="description" rows="3"></textarea>
+                  </div>
+                  <!-- Add this after description field in createTaskModal -->
+                  <div class="mb-3">
+                      <label class="form-label">Checklist</label>
+                      <div id="taskChecklist"></div>
                   </div>
                   <div class="mb-3">
                     <label for="assigned_to" class="form-label">Assigned To</label>
@@ -187,6 +321,15 @@
                   <div class="mb-3">
                     <label for="due_date" class="form-label">Due Date</label>
                     <input type="date" class="form-control" id="due_date" name="due_date">
+                  </div>
+                  <div class="mb-3">
+                      <label>Use Template</label>
+                      <select class="form-select" id="templateSelect">
+                          <option value="">Select Template</option>
+                          @foreach($templates as $template)
+                              <option value="{{ $template->id }}">{{ $template->name }}</option>
+                          @endforeach
+                      </select>
                   </div>
                   <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
@@ -258,6 +401,8 @@
           </div>
         @endforeach
 
+
+        <!-- end of new modals -->
       </div>
     </div>
 
@@ -285,6 +430,53 @@
           });
         });
       });
+
+      // Template selection handler
+      document.getElementById('templateSelect').addEventListener('change', function() {
+    if (this.value) {
+        fetch(`/crm/task-templates/${this.value}`)
+            .then(response => {
+                if (!response.ok) throw new Error('Network error');
+                return response.json();
+            })
+            .then(template => {
+                // Populate basic fields
+                document.getElementById('title').value = template.name;
+                document.getElementById('description').value = template.description;
+                
+                // Populate checklist (if you have this element)
+                const checklistContainer = document.getElementById('taskChecklist');
+                if (checklistContainer) {
+                    checklistContainer.innerHTML = '';
+                    template.checklist?.forEach(item => {
+                        const newItem = `<div class="input-group mb-2">
+                            <input type="text" name="checklist[]" class="form-control" value="${item}">
+                            <button type="button" class="btn btn-outline-danger" onclick="removeChecklistItem(this)">
+                                <i class="fas fa-times"></i>
+                            </button>
+                        </div>`;
+                        checklistContainer.insertAdjacentHTML('beforeend', newItem);
+                    });
+                }
+            })
+            .catch(error => console.error('Error loading template:', error));
+    }
+});
+
+      function removeChecklistItem(button) {
+          button.closest('.input-group').remove();
+      }
+
+      function addChecklistItem() {
+          const checklistContainer = document.getElementById('taskChecklist');
+          const newItem = `<div class="input-group mb-2">
+              <input type="text" name="checklist[]" class="form-control" placeholder="New item">
+              <button type="button" class="btn btn-outline-danger" onclick="removeChecklistItem(this)">
+                  <i class="fas fa-times"></i>
+              </button>
+          </div>`;
+          checklistContainer.insertAdjacentHTML('beforeend', newItem);
+      }
     </script>
   </body>
 </html>
