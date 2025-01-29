@@ -51,6 +51,7 @@ Route::middleware('auth')->group(function () {
 
         Route::get('/crm/task-templates/{template}', [\App\Http\Controllers\CRM\TaskTemplateController::class, 'show'])
     ->name('crm.task-templates.show');
+    
     });
 });
 

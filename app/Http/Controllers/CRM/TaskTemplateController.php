@@ -28,14 +28,23 @@ class TaskTemplateController extends Controller
             ->with('success', 'Template created successfully');
     }
 
-    public function show(TaskTemplate $template)
+    public function show($id) // Change parameter from TaskTemplate $template to $id
     {
-        // Keep this if you're using it for AJAX requests
-        return response()->json($template);
+        $template = TaskTemplate::findOrFail($id);
+        
+        \Log::debug('Template data:', [
+            'id' => $template->id,
+            'name' => $template->name,
+            'description' => $template->description,
+            'checklist' => $template->checklist
+        ]);
+        
+        return response()->json([
+            'name' => $template->name,
+            'description' => $template->description,
+            'checklist' => $template->checklist ?? []
+        ]);
     }
-
-    
-
 
     // Add missing destroy method
     public function destroy(TaskTemplate $template)

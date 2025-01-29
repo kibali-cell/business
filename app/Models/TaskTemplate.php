@@ -12,4 +12,15 @@ class TaskTemplate extends Model
     protected $casts = [
         'checklist' => 'array'
     ];
+
+
+    // Add this to help with debugging
+    protected static function boot()
+    {
+        parent::boot();
+        
+        static::retrieved(function ($model) {
+            \Log::debug('Retrieved template:', $model->toArray());
+        });
+    }
 }

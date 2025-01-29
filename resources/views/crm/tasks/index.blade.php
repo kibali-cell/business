@@ -409,74 +409,84 @@
     @include('home.script')
     <script>
       // Initialize SortableJS for task boards
-      document.addEventListener('DOMContentLoaded', function () {
-        const taskLists = document.querySelectorAll('.task-list');
-        taskLists.forEach(list => {
-          new Sortable(list, {
-            group: 'tasks',
-            animation: 150,
-            onEnd: function (evt) {
-              const taskId = evt.item.dataset.taskId;
-              const newStatus = evt.to.id;
-              fetch(`/tasks/${taskId}/update-status`, {
-                method: 'POST',
-                headers: {
-                  'Content-Type': 'application/json',
-                  'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content
-                },
-                body: JSON.stringify({ status: newStatus })
-              });
-            }
-          });
-        });
-      });
-
       // Template selection handler
-      document.getElementById('templateSelect').addEventListener('change', function() {
+document.getElementById('templateSelect').addEventListener('change', function() {
     if (this.value) {
+        // Add console.log to debug the request
+        console.log('Fetching template with ID:', this.value);
+        
         fetch(`/crm/task-templates/${this.value}`)
             .then(response => {
-                if (!response.ok) throw new Error('Network error');
+                if (!response.ok) {
+                    throw new Error(`HTTP error! status: ${response.status}`);
+                }
                 return response.json();
             })
-            .then(template => {
-                // Populate basic fields
-                document.getElementById('title').value = template.name;
-                document.getElementById('description').value = template.description;
+            .then(data => {
+                // Debug: Log the received data
+                console.log('Received template data:', data);
                 
-                // Populate checklist (if you have this element)
+                // Get the form elements
+                const titleInput = document.getElementById('title');
+                const descriptionInput = document.getElementById('description');
+                
+                // Debug: Log the elements we're trying to populate
+                console.log('Title input element:', titleInput);
+                console.log('Description input element:', descriptionInput);
+                
+                // Safely populate the fields
+                if (titleInput && data.name) {
+                    titleInput.value = data.name;
+                    console.log('Set title to:', data.name);
+                }
+                
+                if (descriptionInput && data.description) {
+                    descriptionInput.value = data.description || '';
+                    console.log('Set description to:', data.description);
+                }
+                
+                // Handle checklist if it exists
                 const checklistContainer = document.getElementById('taskChecklist');
-                if (checklistContainer) {
-                    checklistContainer.innerHTML = '';
-                    template.checklist?.forEach(item => {
-                        const newItem = `<div class="input-group mb-2">
-                            <input type="text" name="checklist[]" class="form-control" value="${item}">
-                            <button type="button" class="btn btn-outline-danger" onclick="removeChecklistItem(this)">
-                                <i class="fas fa-times"></i>
-                            </button>
-                        </div>`;
+                if (checklistContainer && data.checklist && Array.isArray(data.checklist)) {
+                    checklistContainer.innerHTML = ''; // Clear existing items
+                    
+                    data.checklist.forEach(item => {
+                        const newItem = `
+                            <div class="input-group mb-2">
+                                <input type="text" name="checklist[]" class="form-control" value="${item}">
+                                <button type="button" class="btn btn-outline-danger" onclick="removeChecklistItem(this)">
+                                    <i class="fas fa-times"></i>
+                                </button>
+                            </div>
+                        `;
                         checklistContainer.insertAdjacentHTML('beforeend', newItem);
                     });
+                    console.log('Updated checklist items');
                 }
             })
-            .catch(error => console.error('Error loading template:', error));
+            .catch(error => {
+                console.error('Error loading template:', error);
+                alert('Failed to load template. Please check the console for details.');
+            });
     }
 });
 
-      function removeChecklistItem(button) {
-          button.closest('.input-group').remove();
-      }
+function removeChecklistItem(button) {
+    button.closest('.input-group').remove();
+}
 
-      function addChecklistItem() {
-          const checklistContainer = document.getElementById('taskChecklist');
-          const newItem = `<div class="input-group mb-2">
-              <input type="text" name="checklist[]" class="form-control" placeholder="New item">
-              <button type="button" class="btn btn-outline-danger" onclick="removeChecklistItem(this)">
-                  <i class="fas fa-times"></i>
-              </button>
-          </div>`;
-          checklistContainer.insertAdjacentHTML('beforeend', newItem);
-      }
+function addChecklistItem() {
+    const checklistContainer = document.getElementById('taskChecklist');
+    const newItem = `
+        <div class="input-group mb-2">
+            <input type="text" name="checklist[]" class="form-control" placeholder="New item">
+            <button type="button" class="btn btn-outline-danger" onclick="removeChecklistItem(this)">
+                <i class="fas fa-times"></i>
+            </button>
+        </div>
+    `;
+    checklistContainer.insertAdjacentHTML('beforeend', newItem);
+}
     </script>
   </body>
 </html>
