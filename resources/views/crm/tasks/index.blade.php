@@ -408,6 +408,46 @@
 
     @include('home.script')
     <script>
+      document.querySelectorAll('.task-list').forEach((el) => {
+    new Sortable(el, {
+      group: 'tasks',
+      animation: 150,
+      onEnd: function (evt) {
+        const taskId = evt.item.dataset.taskId;
+        const newStatus = evt.to.dataset.status;
+
+        const formData = new FormData();
+        formData.append('_method', 'PUT');
+        formData.append('status', newStatus);
+
+        fetch(`/crm/tasks/${taskId}`, {
+          method: 'POST',
+          headers: {
+            'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content'),
+          },
+          body: formData,
+        })
+          .then((response) => {
+            if (!response.ok) {
+              throw new Error('Network response was not ok');
+            }
+            return response.json();
+          })
+          .then((data) => {
+            console.log('Task status updated:', data);
+          })
+          .catch((error) => {
+            console.error('Error:', error);
+            // Revert the DOM changes
+            evt.to.removeChild(evt.item);
+            const refNode = evt.from.children[evt.oldIndex] || null;
+            evt.from.insertBefore(evt.item, refNode);
+          });
+      },
+    });
+  });
+    </script>
+    <script>
       // Initialize SortableJS for task boards
       // Template selection handler
 document.getElementById('templateSelect').addEventListener('change', function() {
@@ -488,5 +528,7 @@ function addChecklistItem() {
     checklistContainer.insertAdjacentHTML('beforeend', newItem);
 }
     </script>
+
+    
   </body>
 </html>

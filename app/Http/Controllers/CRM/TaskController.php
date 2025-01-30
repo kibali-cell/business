@@ -96,7 +96,12 @@ class TaskController extends Controller
             'status' => 'required|in:pending,in_progress,completed',
         ]);
 
-        $task->update(['status' => $request->status]);
+        try {
+            $task->update(['status' => $request->status]);
+            return response()->json(['success' => true]);
+        } catch (\Exception $e) {
+            return response()->json(['error' => $e->getMessage()], 500);
+        }
 
         // Send notification to the assigned user
         if ($task->assignedUser) {
@@ -106,6 +111,7 @@ class TaskController extends Controller
         return response()->json(['success' => true]);
     }
 
+    
     // Remove the specified task from the database
     public function destroy(Task $task)
     {
