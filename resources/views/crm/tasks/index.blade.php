@@ -340,7 +340,7 @@
             </div>
           </div>
         </div>
-
+  
         <!-- Edit Task Modals -->
         @foreach ($tasks as $task)
           <div class="modal fade" id="editTaskModal{{ $task->id }}" tabindex="-1" aria-labelledby="editTaskModalLabel{{ $task->id }}" aria-hidden="true">
@@ -408,6 +408,7 @@
 
     @include('home.script')
     <script>
+      // Task List Script
       document.querySelectorAll('.task-list').forEach((el) => {
     new Sortable(el, {
       group: 'tasks',
