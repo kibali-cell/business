@@ -50,7 +50,7 @@
                             <td>
                                 <button class="btn btn-sm btn-primary use-template" 
                                         data-id="{{ $template->id }}">
-                                    <i class="fas fa-use"></i> Use
+                                    <i class="fas fa-play"></i> Use
                                 </button>
                                 <form action="{{ route('crm.task-templates.destroy', $template->id) }}" method="POST" class="d-inline delete-template-form">
                                     @csrf
@@ -71,10 +71,102 @@
 </div>
         </div>
 
+        <div class="modal fade" id="createTaskModal" tabindex="-1" aria-labelledby="createTaskModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="createTaskModalLabel">Create Task from Template</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <form action="{{ route('crm.tasks.store') }}" method="POST">
+                    @csrf
+                    <div class="mb-3">
+                        <label for="title" class="form-label">Task Title</label>
+                        <input type="text" class="form-control" name="title" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="description" class="form-label">Description</label>
+                        <textarea class="form-control" name="description" rows="3"></textarea>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Checklist</label>
+                        <div id="taskChecklist"></div>
+                    </div>
+                    <button type="submit" class="btn btn-primary">Create Task</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<!-- Add this at the bottom of your task-templates/index.blade.php -->
+<div class="modal fade" id="taskCreateModal" tabindex="-1">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Create Task from Template</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                <form action="{{ route('crm.tasks.store') }}" method="POST">
+                    @csrf
+                    <div class="mb-3">
+                        <label>Title</label>
+                        <input type="text" name="title" class="form-control" required>
+                    </div>
+                    <div class="mb-3">
+                        <label>Description</label>
+                        <textarea name="description" class="form-control" rows="3"></textarea>
+                    </div>
+                    <div id="taskChecklist"></div>
+                    <button type="submit" class="btn btn-primary">Create Task</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<div class="modal fade" id="taskCreateModal" tabindex="-1">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Create Task from Template</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                <form action="{{ route('crm.tasks.store') }}" method="POST">
+                    @csrf
+                    <!-- Changed from name="name" to name="title" -->
+                    <div class="mb-3">
+                        <label>Task Title</label>
+                        <input type="text" name="title" class="form-control" required>
+                    </div>
+                    <div class="mb-3">
+                        <label>Description</label>
+                        <textarea name="description" class="form-control" rows="3"></textarea>
+                    </div>
+                    <div class="mb-3">
+                        <label>Checklist Items</label>
+                        <div id="taskChecklist">
+                            <!-- Dynamic items will be here -->
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                        <button type="submit" class="btn btn-primary">Create Task</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
         @include('crm.task-templates.template-modal')
 
-    @include('home.script')
-
+    
     <script src="{{ asset('js/custom.js') }}"></script>
     <script>
         document.getElementById('templateSelect').addEventListener('change', function() {
@@ -128,7 +220,7 @@
 
     </script>
 
-   
+@include('home.script')
     
   </body>
 </html>

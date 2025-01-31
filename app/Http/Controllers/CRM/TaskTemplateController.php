@@ -31,20 +31,20 @@ class TaskTemplateController extends Controller
 
     public function show($id)
     {
-        $template = TaskTemplate::findOrFail($id);
-        
-        \Log::debug('Template data:', [
-            'id' => $template->id,
-            'name' => $template->name,
-            'description' => $template->description,
-            'checklist' => $template->checklist
-        ]);
-        
-        return response()->json([
-            'name' => $template->name,
-            'description' => $template->description,
-            'checklist' => json_decode($template->checklist) ?? []
-        ]);
+        try {
+            $template = TaskTemplate::findOrFail($id);
+            
+            return response()->json([
+                'name' => $template->name,
+                'description' => $template->description,
+                'checklist' => $template->checklist ?? []
+            ]);
+        } catch (\Exception $e) {
+            \Log::error('Template show error: ' . $e->getMessage());
+            return response()->json([
+                'error' => 'Template not found'
+            ], 404);
+        }
     }
 
     // Add missing destroy method
@@ -57,10 +57,25 @@ class TaskTemplateController extends Controller
     
     public function use($id)
     {
-        $template = TaskTemplate::findOrFail($id);
-        session()->put('task_template', $template);
-
-        return redirect()->route('crm.task-templates.index')->with('success', 'Template used successfully.');
+        try {
+            $template = TaskTemplate::findOrFail($id);
+            
+            return response()->json([
+                'success' => true,
+                'template' => [
+                    'name' => $template->name,
+                    'description' => $template->description,
+                    'checklist' => $template->checklist ?? []
+                ]
+            ]);
+        } catch (\Exception $e) {
+            \Log::error('Template use error: ' . $e->getMessage());
+            return response()->json([
+                'success' => false,
+                'error' => 'Template not found'
+            ], 404);
+        }
     }
+
 
 }

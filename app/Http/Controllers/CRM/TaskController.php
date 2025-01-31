@@ -91,26 +91,26 @@ class TaskController extends Controller
 
     // Update task status (for drag-and-drop functionality)
     public function updateStatus(Request $request, Task $task)
-    {
-        $request->validate([
-            'status' => 'required|in:pending,in_progress,completed',
+{
+    $validated = $request->validate([
+        'status' => 'required|in:pending,in_progress,completed'
+    ]);
+
+    try {
+        $task->update(['status' => $validated['status']]);
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Task status updated successfully',
+            'task' => $task
         ]);
-
-        try {
-            $task->update(['status' => $request->status]);
-            return response()->json(['success' => true]);
-        } catch (\Exception $e) {
-            return response()->json(['error' => $e->getMessage()], 500);
-        }
-
-        // Send notification to the assigned user
-        if ($task->assignedUser) {
-            $task->assignedUser->notify(new TaskUpdated($task));
-        }
-
-
-        return response()->json(['success' => true]);
+    } catch (\Exception $e) {
+        return response()->json([
+            'success' => false,
+            'message' => 'Failed to update task status'
+        ], 500);
     }
+}
 
     
     // Remove the specified task from the database
