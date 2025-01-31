@@ -3,6 +3,7 @@
 use App\Http\Controllers\CRM\CompanyController;
 use App\Http\Controllers\CRM\CustomerController;
 use App\Http\Controllers\CRM\TaskController;
+use App\Http\Controllers\CRM\TaskTemplateController;
 use Illuminate\Support\Facades\Route;
 
 Route::middleware('auth')->group(function () {
@@ -41,17 +42,14 @@ Route::middleware('auth')->group(function () {
         Route::put('/crm/tasks/{task}/update-status', [TaskController::class, 'updateStatus'])->name('crm.tasks.update-status');
 
         // Add these to your existing CRM group
-        Route::resource('task-templates', \App\Http\Controllers\CRM\TaskTemplateController::class)->names([
+        Route::resource('task-templates', TaskTemplateController::class)->names([
             'index' => 'crm.task-templates.index',
             'create' => 'crm.task-templates.create',
             'store' => 'crm.task-templates.store',
             'show' => 'crm.task-templates.show',
             'destroy' => 'crm.task-templates.destroy',
-        ]);
-
-        Route::get('/crm/task-templates/{template}', [\App\Http\Controllers\CRM\TaskTemplateController::class, 'show'])
-    ->name('crm.task-templates.show');
-    
+        ]);        
+        
     });
 });
 

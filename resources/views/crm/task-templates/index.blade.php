@@ -52,8 +52,7 @@
                                         data-id="{{ $template->id }}">
                                     <i class="fas fa-use"></i> Use
                                 </button>
-                                <form action="{{ route('crm.task-templates.destroy', $template->id) }}" 
-                                      method="POST" class="d-inline">
+                                <form action="{{ route('crm.task-templates.destroy', $template->id) }}" method="POST" class="d-inline delete-template-form">
                                     @csrf
                                     @method('DELETE')
                                     <button type="submit" class="btn btn-sm btn-danger">
@@ -75,6 +74,8 @@
         @include('crm.task-templates.template-modal')
 
     @include('home.script')
+
+    <script src="{{ asset('js/custom.js') }}"></script>
     <script>
         document.getElementById('templateSelect').addEventListener('change', function() {
     if (this.value) {
@@ -123,6 +124,11 @@
     }
 });
 
+
+
     </script>
+
+   
+    
   </body>
 </html>

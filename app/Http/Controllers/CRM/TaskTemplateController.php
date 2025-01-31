@@ -3,6 +3,7 @@ namespace App\Http\Controllers\CRM;
 
 use App\Http\Controllers\Controller;
 use App\Models\TaskTemplate;
+use App\Models\Task;
 use Illuminate\Http\Request;
 
 class TaskTemplateController extends Controller
@@ -28,7 +29,7 @@ class TaskTemplateController extends Controller
             ->with('success', 'Template created successfully');
     }
 
-    public function show($id) // Change parameter from TaskTemplate $template to $id
+    public function show($id)
     {
         $template = TaskTemplate::findOrFail($id);
         
@@ -42,15 +43,24 @@ class TaskTemplateController extends Controller
         return response()->json([
             'name' => $template->name,
             'description' => $template->description,
-            'checklist' => $template->checklist ?? []
+            'checklist' => json_decode($template->checklist) ?? []
         ]);
     }
 
     // Add missing destroy method
-    public function destroy(TaskTemplate $template)
+    public function destroy($id)
     {
+        $template = TaskTemplate::findOrFail($id);
         $template->delete();
-        return redirect()->route('crm.task-templates.index')
-            ->with('success', 'Template deleted successfully');
+        return redirect()->route('crm.task-templates.index')->with('success', 'Template deleted successfully.');
     }
+    
+    public function use($id)
+    {
+        $template = TaskTemplate::findOrFail($id);
+        session()->put('task_template', $template);
+
+        return redirect()->route('crm.task-templates.index')->with('success', 'Template used successfully.');
+    }
+
 }

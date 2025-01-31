@@ -108,6 +108,7 @@ class TaskController extends Controller
             $task->assignedUser->notify(new TaskUpdated($task));
         }
 
+
         return response()->json(['success' => true]);
     }
 
