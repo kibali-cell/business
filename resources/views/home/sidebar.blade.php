@@ -51,6 +51,38 @@
                 </ul>
               </div>
             </li>
+
+            <!-- Add Documents Section -->
+            <li class="nav-item">
+                <a class="nav-link" data-bs-toggle="collapse" href="#documents" aria-expanded="false" aria-controls="documents">
+                    <i class="menu-icon mdi mdi-folder-multiple"></i>
+                    <span class="menu-title">Documents</span>
+                    <i class="menu-arrow"></i>
+                </a>
+                <div class="collapse" id="documents">
+                    <ul class="nav flex-column sub-menu">
+                        <li class="nav-item">
+                            <a class="nav-link" href="{{ route('documents.index') }}">
+                                All Documents
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="{{ route('folders.index') }}">
+                                Folder Management
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="{{ route('documents.create') }}">
+                                Upload New
+                            </a>
+                        </li>
+                    </ul>
+                </div>
+            </li>
+
+            <!-- Add this before the Documentation link -->
+            <li class="nav-item nav-category">Document Management</li>
+
             <li class="nav-item">
               <a class="nav-link" data-bs-toggle="collapse" href="#tables" aria-expanded="false" aria-controls="tables">
                 <i class="menu-icon mdi mdi-table"></i>

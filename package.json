@@ -18,6 +18,7 @@
     },
     "dependencies": {
         "chart.js": "^4.4.7",
+        "pdfjs-dist": "^4.10.38",
         "sortablejs": "^1.15.6"
     }
 }

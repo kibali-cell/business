@@ -7,6 +7,9 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\CRM\CustomerController;
 use App\Http\Controllers\CRM\CompanyController;
 use App\Http\Controllers\CRM\TaskController;
+use App\Http\Controllers\CRM\TaskTemplateController;
+use App\Http\Controllers\DocumentController;
+use App\Http\Controllers\FolderController;
 
 // Redirect unauthenticated users to the login page before showing the home page.
 Route::get('/', [HomeController::class, 'index'])
@@ -26,6 +29,26 @@ Route::get('/admin', function () {
 //     Route::resource('crm/companies', CompanyController::class);
 // });
 
+// Wrap document and folder routes in auth middleware
+Route::middleware('auth')->group(function () {
+    // Document routes
+    Route::prefix('documents')->group(function () {
+        Route::get('/', [DocumentController::class, 'index'])->name('documents.index');
+        Route::post('/', [DocumentController::class, 'store'])->name('documents.store');
+        Route::get('/{document}', [DocumentController::class, 'show'])->name('documents.show');
+        Route::put('/{document}', [DocumentController::class, 'update'])->name('documents.update');
+        Route::post('/{document}/access', [DocumentController::class, 'manageAccess'])
+             ->name('documents.manage-access');
+    });
+
+    Route::get('/documents/create', [DocumentController::class, 'create'])->name('documents.create');
+    Route::get('/folders', [FolderController::class, 'index'])->name('folders.index');
+
+    // Folder routes
+    Route::get('/folders', [FolderController::class, 'index'])->name('folders.index');
+    Route::post('/folders', [FolderController::class, 'store'])->name('folders.store');
+    Route::get('/folders/{folder}', [FolderController::class, 'show'])->name('folders.show');
+});
 
 Route::middleware('auth')->group(function () {
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
