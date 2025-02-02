@@ -13,7 +13,8 @@ class InvoiceController extends Controller
     public function index()
     {
         $invoices = Invoice::with('client')->paginate(10);
-        return view('finance.invoices.index', compact('invoices'));
+        $clients = Customer::all();
+        return view('finance.invoices.index', compact('invoices', 'clients'));
     }
 
     // Create: Show the form to create a new invoice
