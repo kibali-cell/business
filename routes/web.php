@@ -10,6 +10,9 @@ use App\Http\Controllers\CRM\TaskController;
 use App\Http\Controllers\CRM\TaskTemplateController;
 use App\Http\Controllers\DocumentController;
 use App\Http\Controllers\FolderController;
+use App\Http\Controllers\Finance\AccountController;
+use App\Http\Controllers\Finance\TransactionController;
+use App\Http\Controllers\Finance\InvoiceController;
 
 // Redirect unauthenticated users to the login page before showing the home page.
 Route::get('/', [HomeController::class, 'index'])
@@ -24,12 +27,7 @@ Route::get('/admin', function () {
     return 'Admin Dashboard';
 })->middleware(['auth', 'role:admin']);
 
-// Route::middleware('auth')->group(function () {
-//     Route::resource('crm/customers', CustomerController::class);
-//     Route::resource('crm/companies', CompanyController::class);
-// });
-
-// Wrap document and folder routes in auth middleware
+// Document and Folder Routes
 Route::middleware('auth')->group(function () {
     // Document routes
     Route::prefix('documents')->group(function () {
@@ -42,7 +40,6 @@ Route::middleware('auth')->group(function () {
     });
 
     Route::get('/documents/create', [DocumentController::class, 'create'])->name('documents.create');
-    Route::get('/folders', [FolderController::class, 'index'])->name('folders.index');
 
     // Folder routes
     Route::get('/folders', [FolderController::class, 'index'])->name('folders.index');
@@ -50,19 +47,56 @@ Route::middleware('auth')->group(function () {
     Route::get('/folders/{folder}', [FolderController::class, 'show'])->name('folders.show');
 });
 
+// Profile Routes
 Route::middleware('auth')->group(function () {
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
 });
 
+Route::middleware('auth')->group(function () {
+    // Account Routes
+    Route::prefix('finance/accounts')->group(function () {
+        Route::get('/', [AccountController::class, 'index'])->name('finance.accounts.index');
+        Route::get('/create', [AccountController::class, 'create'])->name('finance.accounts.create');
+        Route::post('/', [AccountController::class, 'store'])->name('finance.accounts.store');
+        Route::get('/{account}', [AccountController::class, 'show'])->name('finance.accounts.show');
+        Route::get('/{account}/edit', [AccountController::class, 'edit'])->name('finance.accounts.edit');
+        Route::put('/{account}', [AccountController::class, 'update'])->name('finance.accounts.update');
+        Route::delete('/{account}', [AccountController::class, 'destroy'])->name('finance.accounts.destroy');
+    });
+
+    // Transaction Routes
+    Route::prefix('finance/transactions')->group(function () {
+        Route::get('/', [TransactionController::class, 'index'])->name('finance.transactions.index');
+        Route::get('/create', [TransactionController::class, 'create'])->name('finance.transactions.create');
+        Route::post('/', [TransactionController::class, 'store'])->name('finance.transactions.store');
+        Route::get('/{transaction}', [TransactionController::class, 'show'])->name('finance.transactions.show');
+        Route::get('/{transaction}/edit', [TransactionController::class, 'edit'])->name('finance.transactions.edit');
+        Route::put('/{transaction}', [TransactionController::class, 'update'])->name('finance.transactions.update');
+        Route::delete('/{transaction}', [TransactionController::class, 'destroy'])->name('finance.transactions.destroy');
+    });
+
+    // Invoice Routes
+    Route::prefix('finance/invoices')->group(function () {
+        Route::get('/', [InvoiceController::class, 'index'])->name('finance.invoices.index');
+        Route::get('/create', [InvoiceController::class, 'create'])->name('finance.invoices.create');
+        Route::post('/', [InvoiceController::class, 'store'])->name('finance.invoices.store');
+        Route::get('/{invoice}', [InvoiceController::class, 'show'])->name('finance.invoices.show');
+        Route::get('/{invoice}/edit', [InvoiceController::class, 'edit'])->name('finance.invoices.edit');
+        Route::put('/{invoice}', [InvoiceController::class, 'update'])->name('finance.invoices.update');
+        Route::delete('/{invoice}', [InvoiceController::class, 'destroy'])->name('finance.invoices.destroy');
+    });
+});
+
+// Logout Route
 Route::post('/logout', function () {
     \Illuminate\Support\Facades\Auth::logout();
     return redirect('/'); // Redirect to home or login page after logout
 })->name('logout');
 
+// Authentication Routes
 require __DIR__.'/auth.php';
+
+// CRM Module Routes (if needed)
 require __DIR__.'/modules/crm.php';
-
-
-
