@@ -13,6 +13,7 @@ use App\Http\Controllers\FolderController;
 use App\Http\Controllers\Finance\AccountController;
 use App\Http\Controllers\Finance\TransactionController;
 use App\Http\Controllers\Finance\InvoiceController;
+use App\Http\Controllers\Finance\ExpenseController;
 
 // Redirect unauthenticated users to the login page before showing the home page.
 Route::get('/', [HomeController::class, 'index'])
@@ -88,6 +89,20 @@ Route::middleware('auth')->group(function () {
         Route::delete('/{invoice}', [InvoiceController::class, 'destroy'])->name('destroy');
 
         Route::get('/{invoice}/download', [InvoiceController::class, 'download'])->name('download');
+    });
+
+
+    Route::prefix('finance/expenses')->name('finance.expenses.')->group(function () {
+        Route::get('/', [ExpenseController::class, 'index'])->name('index');
+        Route::get('/create', [ExpenseController::class, 'create'])->name('create');
+        Route::post('/', [ExpenseController::class, 'store'])->name('store');
+        Route::get('/{expense}', [ExpenseController::class, 'show'])->name('show');
+        Route::get('/{expense}/edit', [ExpenseController::class, 'edit'])->name('edit');
+        Route::put('/{expense}', [ExpenseController::class, 'update'])->name('update');
+        Route::delete('/{expense}', [ExpenseController::class, 'destroy'])->name('destroy');
+        
+        // New route for status update (for approval/rejection)
+        Route::put('/{expense}/status', [ExpenseController::class, 'updateStatus'])->name('status');
     });
 });
 
