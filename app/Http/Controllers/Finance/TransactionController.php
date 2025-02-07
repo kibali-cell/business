@@ -1,4 +1,5 @@
 <?php
+// app/Http/Controllers/Finance/TransactionController.php
 
 namespace App\Http\Controllers\Finance;
 
@@ -9,74 +10,74 @@ use Illuminate\Http\Request;
 
 class TransactionController extends Controller
 {
-    // Index: List all transactions
+    // List all transactions
     public function index()
     {
-        $transactions = Transaction::with(['fromAccount', 'toAccount'])->paginate(10);
-        $accounts = Account::all();
+        $transactions = Transaction::with('fromAccount', 'toAccount')->get();
+        $accounts = Account::all(); // Load all accounts
+
+        // Pass both variables to your view. Adjust the view name as needed.
         return view('finance.transactions.index', compact('transactions', 'accounts'));
     }
 
-    // Create: Show the form to create a new transaction
+    // Show form to create a new transaction
     public function create()
     {
         $accounts = Account::all();
-        return view('finance.transactions.create', compact('accounts'));
+        return view('transactions.create', compact('accounts'));
     }
 
-    // Store: Save a new transaction
+    // Store a new transaction in the database
     public function store(Request $request)
     {
-        $request->validate([
-            'date' => 'required|date',
-            'type' => 'required|string|max:255',
-            'amount' => 'required|numeric',
-            'status' => 'required|string|max:255',
-            'from_account_id' => 'required|exists:accounts,id',
-            'to_account_id' => 'required|exists:accounts,id',
-            'reference_number' => 'required|string|unique:transactions',
-            'description' => 'nullable|string',
+        $validated = $request->validate([
+            'date'              => 'required|date',
+            'type'              => 'required|string',
+            'amount'            => 'required|numeric|min:0',
+            'status'            => 'required|string',
+            'from_account_id'   => 'required|exists:accounts,id',
+            'to_account_id'     => 'required|exists:accounts,id',
+            'reference_number'  => 'required|string|unique:transactions,reference_number',
+            'description'       => 'nullable|string',
         ]);
 
-        Transaction::create($request->all());
-        return redirect()->route('financial.transactions.index')->with('success', 'Transaction created successfully.');
+        // If you are using an input of type "date", it provides YYYY-MM-DD.
+        // Convert it to a DateTime string if necessary.
+        // For example, you could do: $validated['date'] .= ' 00:00:00';
+
+        Transaction::create($validated);
+        return redirect()->route('finance.transactions.index')->with('success', 'Transaction created successfully.');
     }
 
-    // Show: Display a specific transaction
-    public function show(Transaction $transaction)
-    {
-        return view('finance.transactions.show', compact('transaction'));
-    }
-
-    // Edit: Show the form to edit a transaction
+    // Show form to edit an existing transaction
     public function edit(Transaction $transaction)
     {
         $accounts = Account::all();
-        return view('finance.transactions.edit', compact('transaction', 'accounts'));
+        return view('transactions.edit', compact('transaction', 'accounts'));
     }
 
-    // Update: Update a transaction
+    // Update an existing transaction
     public function update(Request $request, Transaction $transaction)
     {
-        $request->validate([
-            'date' => 'required|date',
-            'type' => 'required|string|max:255',
-            'amount' => 'required|numeric',
-            'status' => 'required|string|max:255',
-            'from_account_id' => 'required|exists:accounts,id',
-            'to_account_id' => 'required|exists:accounts,id',
-            'reference_number' => 'required|string|unique:transactions,reference_number,' . $transaction->id,
-            'description' => 'nullable|string',
+        $validated = $request->validate([
+            'date'              => 'required|date',
+            'type'              => 'required|string',
+            'amount'            => 'required|numeric|min:0',
+            'status'            => 'required|string',
+            'from_account_id'   => 'required|exists:accounts,id',
+            'to_account_id'     => 'required|exists:accounts,id',
+            'reference_number'  => 'required|string|unique:transactions,reference_number,'.$transaction->id,
+            'description'       => 'nullable|string',
         ]);
 
-        $transaction->update($request->all());
-        return redirect()->route('financial.transactions.index')->with('success', 'Transaction updated successfully.');
+        $transaction->update($validated);
+        return redirect()->route('finance.transactions.index')->with('success', 'Transaction updated successfully.');
     }
 
-    // Destroy: Delete a transaction
+    // Delete a transaction
     public function destroy(Transaction $transaction)
     {
         $transaction->delete();
-        return redirect()->route('financial.transactions.index')->with('success', 'Transaction deleted successfully.');
+        return redirect()->route('finance.transactions.index')->with('success', 'Transaction deleted successfully.');
     }
 }

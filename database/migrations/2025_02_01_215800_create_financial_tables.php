@@ -34,7 +34,7 @@ return new class extends Migration
 
         Schema::create('invoices', function (Blueprint $table) {
             $table->id();
-            $table->string('number')->unique();
+            $table->string('number')->unique()->nullable();
             $table->foreignId('client_id')->constrained('customers');
             $table->date('due_date');
             $table->decimal('subtotal', 15, 2);

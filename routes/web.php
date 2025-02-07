@@ -77,15 +77,17 @@ Route::middleware('auth')->group(function () {
         Route::delete('/{transaction}', [TransactionController::class, 'destroy'])->name('finance.transactions.destroy');
     });
 
-    // Invoice Routes
-    Route::prefix('finance/invoices')->group(function () {
-        Route::get('/', [InvoiceController::class, 'index'])->name('finance.invoices.index');
-        Route::get('/create', [InvoiceController::class, 'create'])->name('finance.invoices.create');
-        Route::post('/', [InvoiceController::class, 'store'])->name('finance.invoices.store');
-        Route::get('/{invoice}', [InvoiceController::class, 'show'])->name('finance.invoices.show');
-        Route::get('/{invoice}/edit', [InvoiceController::class, 'edit'])->name('finance.invoices.edit');
-        Route::put('/{invoice}', [InvoiceController::class, 'update'])->name('finance.invoices.update');
-        Route::delete('/{invoice}', [InvoiceController::class, 'destroy'])->name('finance.invoices.destroy');
+    // Invoice Routes (updated)
+    Route::prefix('finance/invoices')->name('finance.invoices.')->group(function () {
+        Route::get('/', [InvoiceController::class, 'index'])->name('index');
+        Route::get('/create', [InvoiceController::class, 'create'])->name('create');
+        Route::post('/', [InvoiceController::class, 'store'])->name('store');
+        Route::get('/{invoice}', [InvoiceController::class, 'show'])->name('show');
+        Route::get('/{invoice}/edit', [InvoiceController::class, 'edit'])->name('edit');
+        Route::put('/{invoice}', [InvoiceController::class, 'update'])->name('update');
+        Route::delete('/{invoice}', [InvoiceController::class, 'destroy'])->name('destroy');
+
+        Route::get('/{invoice}/download', [InvoiceController::class, 'download'])->name('download');
     });
 });
 
