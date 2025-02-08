@@ -14,6 +14,7 @@ use App\Http\Controllers\Finance\AccountController;
 use App\Http\Controllers\Finance\TransactionController;
 use App\Http\Controllers\Finance\InvoiceController;
 use App\Http\Controllers\Finance\ExpenseController;
+use App\Http\Controllers\Finance\ReportController;
 
 // Redirect unauthenticated users to the login page before showing the home page.
 Route::get('/', [HomeController::class, 'index'])
@@ -104,6 +105,14 @@ Route::middleware('auth')->group(function () {
         // New route for status update (for approval/rejection)
         Route::put('/{expense}/status', [ExpenseController::class, 'updateStatus'])->name('status');
     });
+
+    Route::prefix('finance/reports')->name('finance.reports.')->group(function () {
+        Route::get('/dashboard', [ReportController::class, 'dashboard'])->name('dashboard');
+        Route::get('/export', function() {
+            return Excel::download(new FinancialReportExport, 'financial_report.xlsx');
+        })->name('export');
+    });
+    
 });
 
 // Logout Route

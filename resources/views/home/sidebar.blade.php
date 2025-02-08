@@ -86,6 +86,9 @@
                     <li class="nav-item">
                         <a class="nav-link" href="{{ route('finance.expenses.index') }}">Expenses</a>
                     </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{{ route('finance.reports.dashboard') }}">Reports</a>
+                    </li>
                 </ul>
             </div>
         </li>
