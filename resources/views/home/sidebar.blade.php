@@ -89,6 +89,12 @@
                     <li class="nav-item">
                         <a class="nav-link" href="{{ route('finance.reports.dashboard') }}">Reports</a>
                     </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{{ route('finance.budgets.index') }}">Budget</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{{ route('finance.bank-transactions.index') }}">Bank Transactions</a>
+                    </li>
                 </ul>
             </div>
         </li>

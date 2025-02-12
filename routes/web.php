@@ -1,9 +1,9 @@
 <?php
 
-use App\Http\Controllers\ProfileController;
-use App\Http\Controllers\HomeController;
 use Illuminate\Support\Facades\Route;
 
+use App\Http\Controllers\ProfileController;
+use App\Http\Controllers\HomeController;
 use App\Http\Controllers\CRM\CustomerController;
 use App\Http\Controllers\CRM\CompanyController;
 use App\Http\Controllers\CRM\TaskController;
@@ -15,6 +15,8 @@ use App\Http\Controllers\Finance\TransactionController;
 use App\Http\Controllers\Finance\InvoiceController;
 use App\Http\Controllers\Finance\ExpenseController;
 use App\Http\Controllers\Finance\ReportController;
+use App\Http\Controllers\Finance\BudgetController;
+use App\Http\Controllers\Finance\BankTransactionController;
 
 // Redirect unauthenticated users to the login page before showing the home page.
 Route::get('/', [HomeController::class, 'index'])
@@ -113,6 +115,22 @@ Route::middleware('auth')->group(function () {
         })->name('export');
     });
     
+    Route::prefix('finance/budgets')->name('finance.budgets.')->group(function () {
+        Route::get('/', [BudgetController::class, 'index'])->name('index');
+        Route::get('/create', [BudgetController::class, 'create'])->name('create');
+        Route::post('/', [BudgetController::class, 'store'])->name('store');
+        Route::get('/{budget}', [BudgetController::class, 'show'])->name('show');
+        Route::get('/{budget}/edit', [BudgetController::class, 'edit'])->name('edit');
+        Route::put('/{budget}', [BudgetController::class, 'update'])->name('update');
+        Route::delete('/{budget}', [BudgetController::class, 'destroy'])->name('destroy');
+    });
+
+
+    Route::prefix('finance/bank-transactions')->name('finance.bank-transactions.')->group(function () {
+        Route::get('/', [BankTransactionController::class, 'index'])->name('index');
+        Route::post('/sync', [BankTransactionController::class, 'sync'])->name('sync');
+    });
+
 });
 
 // Logout Route
