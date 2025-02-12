@@ -64,6 +64,7 @@
                             <th>Client</th>
                             <th>Due Date</th>
                             <th>Total</th>
+                            <th>Currency</th>
                             <th>Status</th>
                             <th>Actions</th>
                           </tr>
@@ -75,6 +76,7 @@
                               <td>{{ $invoice->client->name }}</td>
                               <td>{{ \Carbon\Carbon::parse($invoice->due_date)->format('Y-m-d') }}</td>
                               <td>{{ $invoice->total }}</td>
+                              <td>{{ $invoice->currency }}</td>
                               <td>{{ $invoice->status }}</td>
                               <td>
                                 <!-- View Button: Opens Professional Invoice Modal -->
@@ -281,6 +283,15 @@
                 <div class="mb-3">
                   <label for="notes" class="form-label">Notes</label>
                   <textarea name="notes" class="form-control">{{ old('notes') }}</textarea>
+                </div>
+                <div class="mb-3">
+                    <label for="currency" class="form-label">Currency</label>
+                    <select name="currency" id="currency" class="form-control" required>
+                        <option value="USD" {{ old('currency', 'USD') == 'USD' ? 'selected' : '' }}>USD</option>
+                        <option value="EUR" {{ old('currency') == 'EUR' ? 'selected' : '' }}>EUR</option>
+                        <option value="GBP" {{ old('currency') == 'GBP' ? 'selected' : '' }}>GBP</option>
+                        <!-- Add more currencies as needed -->
+                    </select>
                 </div>
               </div>
               <div class="modal-footer">

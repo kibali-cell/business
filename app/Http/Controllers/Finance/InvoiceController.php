@@ -53,6 +53,7 @@ class InvoiceController extends Controller
             'status'         => 'required|string|max:255',
             'payment_terms'  => 'required|string|max:255',
             'notes'          => 'nullable|string',
+            'currency'      => 'required|string|size:3', // e.g., USD, EUR, GBP
         ]);
 
         // Create the invoice (number is null or default at this point)
@@ -94,6 +95,7 @@ class InvoiceController extends Controller
             'status'         => 'required|string|max:255',
             'payment_terms'  => 'required|string|max:255',
             'notes'          => 'nullable|string',
+            'currency'      => 'required|string|size:3', // e.g., USD, EUR, GBP
         ]);
 
         $invoice->update($validated);
