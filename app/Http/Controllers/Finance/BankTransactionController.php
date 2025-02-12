@@ -6,15 +6,22 @@ use App\Http\Controllers\Controller;
 use App\Services\BankIntegrationService;
 use Illuminate\Http\Request;
 
+
 class BankTransactionController extends Controller
 {
+    protected $bankIntegrationService;
+
+    public function __construct(BankIntegrationService $bankIntegrationService)
+    {
+        $this->bankIntegrationService = $bankIntegrationService;
+    }
+
     /**
      * Trigger a manual sync of bank transactions.
      */
     public function sync()
     {
-        $service = new BankIntegrationService();
-        $count = $service->syncTransactions();
+        $count = $this->bankIntegrationService->syncTransactions();
 
         return redirect()->back()->with('success', "$count bank transactions have been synced successfully.");
     }

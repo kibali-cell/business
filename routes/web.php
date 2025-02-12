@@ -17,6 +17,9 @@ use App\Http\Controllers\Finance\ExpenseController;
 use App\Http\Controllers\Finance\ReportController;
 use App\Http\Controllers\Finance\BudgetController;
 use App\Http\Controllers\Finance\BankTransactionController;
+use App\Exports\FinancialReportExport;
+use Maatwebsite\Excel\Facades\Excel;
+
 
 // Redirect unauthenticated users to the login page before showing the home page.
 Route::get('/', [HomeController::class, 'index'])

@@ -10,15 +10,16 @@ class BankIntegrationService
     /**
      * Simulate fetching transactions from an external bank API.
      *
-     * In a real implementation, you would call the API, process the response,
-     * and return an array of transactions.
+     * In a real implementation, you would make an HTTP request here.
+     *
+     * @return array
      */
     public function fetchTransactions()
     {
-        // Simulated transaction data (replace with real API calls)
+        // Simulated data – replace this with a real API call.
         return [
             [
-                'account_id' => 1,  // Assuming internal bank account ID 1
+                'account_id' => 1,  // Replace with your internal bank account ID
                 'transaction_date' => Carbon::now()->subDays(2)->format('Y-m-d'),
                 'amount' => -150.75,
                 'description' => 'Office Supplies Purchase',
@@ -36,19 +37,23 @@ class BankIntegrationService
 
     /**
      * Sync fetched transactions into our local database.
+     *
+     * @return int The number of new transactions added.
      */
     public function syncTransactions()
     {
         $transactions = $this->fetchTransactions();
+        $syncedCount = 0;
 
         foreach ($transactions as $data) {
-            // Check if the transaction already exists (by external reference)
+            // Check if the transaction already exists using the external reference.
             $existing = BankTransaction::where('external_reference', $data['external_reference'])->first();
             if (!$existing) {
                 BankTransaction::create($data);
+                $syncedCount++;
             }
         }
 
-        return count($transactions);
+        return $syncedCount;
     }
 }
