@@ -17,6 +17,10 @@ use App\Http\Controllers\Finance\ExpenseController;
 use App\Http\Controllers\Finance\ReportController;
 use App\Http\Controllers\Finance\BudgetController;
 use App\Http\Controllers\Finance\BankTransactionController;
+use App\Http\Controllers\InventoryController;
+use App\Http\Controllers\PurchaseOrderController;
+use App\Http\Controllers\SupplierController;
+
 use App\Exports\FinancialReportExport;
 use Maatwebsite\Excel\Facades\Excel;
 
@@ -109,6 +113,41 @@ Route::middleware('auth')->group(function () {
         
         // New route for status update (for approval/rejection)
         Route::put('/{expense}/status', [ExpenseController::class, 'updateStatus'])->name('status');
+
+
+        Route::prefix('inventory')->name('inventory.')->group(function () {
+            Route::get('/', [InventoryController::class, 'index'])->name('index');
+            Route::get('/create', [InventoryController::class, 'create'])->name('create');
+            Route::post('/', [InventoryController::class, 'store'])->name('store');
+            Route::get('/{product}', [InventoryController::class, 'show'])->name('show');
+            Route::get('/{product}/edit', [InventoryController::class, 'edit'])->name('edit');
+            Route::put('/{product}', [InventoryController::class, 'update'])->name('update');
+            Route::delete('/{product}', [InventoryController::class, 'destroy'])->name('destroy');
+
+            // Record a transaction (stock in/out)
+            Route::post('/{product}/transactions', [InventoryController::class, 'recordTransaction'])->name('recordTransaction');
+        });
+
+        Route::prefix('purchase-orders')->name('purchase_orders.')->group(function () {
+            Route::get('/', [PurchaseOrderController::class, 'index'])->name('index');
+            Route::get('/create', [PurchaseOrderController::class, 'create'])->name('create');
+            Route::post('/', [PurchaseOrderController::class, 'store'])->name('store');
+            Route::get('/{purchaseOrder}', [PurchaseOrderController::class, 'show'])->name('show');
+            Route::get('/{purchaseOrder}/edit', [PurchaseOrderController::class, 'edit'])->name('edit');
+            Route::put('/{purchaseOrder}', [PurchaseOrderController::class, 'update'])->name('update');
+            Route::delete('/{purchaseOrder}', [PurchaseOrderController::class, 'destroy'])->name('destroy');
+        });
+
+        Route::prefix('suppliers')->name('suppliers.')->group(function () {
+            Route::get('/', [SupplierController::class, 'index'])->name('index');
+            Route::get('/create', [SupplierController::class, 'create'])->name('create');
+            Route::post('/', [SupplierController::class, 'store'])->name('store');
+            Route::get('/{supplier}', [SupplierController::class, 'show'])->name('show');
+            Route::get('/{supplier}/edit', [SupplierController::class, 'edit'])->name('edit');
+            Route::put('/{supplier}', [SupplierController::class, 'update'])->name('update');
+            Route::delete('/{supplier}', [SupplierController::class, 'destroy'])->name('destroy');
+        });
+
     });
 
     Route::prefix('finance/reports')->name('finance.reports.')->group(function () {
