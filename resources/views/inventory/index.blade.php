@@ -213,7 +213,7 @@
   </div>
 </div>
 
-<!-- View Product Modals: Output separately after table -->
+<!-- View Product Modal: Output separately after table -->
 @foreach($products as $product)
   <div class="modal fade" id="viewProductModal{{ $product->id }}" tabindex="-1" aria-labelledby="viewProductModalLabel{{ $product->id }}" aria-hidden="true">
     <div class="modal-dialog">
@@ -261,6 +261,12 @@
               <td>{{ ucfirst($product->status) }}</td>
             </tr>
           </table>
+
+          <!-- Barcode Display -->
+          <div class="barcode text-center mt-3">
+            {!! DNS1D::getBarcodeHTML($product->barcode ?? $product->sku, 'C128') !!}
+            <p>{{ $product->barcode ?? $product->sku }}</p>
+          </div>
         </div>
         <div class="modal-footer">
           <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>

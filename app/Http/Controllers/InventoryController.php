@@ -125,4 +125,59 @@ class InventoryController extends Controller
         return view('inventory.reports', compact('lowStockProducts', 'inventoryValue'));
     }
 
+    
+
+    public function valuation()
+{
+    $lowStockProducts = Product::whereColumn('quantity', '<', 'reorder_point')->get();
+    $inventoryValue = Product::sum(\DB::raw('cost * quantity'));
+
+    // Example: Group inventory value by warehouse
+    $valueByWarehouse = \DB::table('products')
+        ->join('inventory_transactions', 'products.id', '=', 'inventory_transactions.product_id')
+        ->select('inventory_transactions.warehouse_id', \DB::raw('SUM(products.cost * products.quantity) as total_value'))
+        ->groupBy('inventory_transactions.warehouse_id')
+        ->get();
+
+    return view('inventory.valuation', compact('lowStockProducts', 'inventoryValue', 'valueByWarehouse'));
+}
+
+public function transferStock(Request $request, Product $product)
+{
+    $validated = $request->validate([
+        'from_warehouse_id' => 'required|integer|exists:warehouses,id',
+        'to_warehouse_id'   => 'required|integer|exists:warehouses,id|different:from_warehouse_id',
+        'quantity'          => 'required|integer|min:1',
+        'date'              => 'required|date',
+    ]);
+
+    // Deduct stock from the source warehouse
+    // Create a transaction for 'out' from the source warehouse
+    InventoryTransaction::create([
+        'product_id'       => $product->id,
+        'warehouse_id'     => $validated['from_warehouse_id'],
+        'type'             => 'out',
+        'quantity'         => $validated['quantity'],
+        'unit_price'       => $product->cost,
+        'reference_number' => 'Transfer-' . now()->timestamp,
+        'date'             => $validated['date'],
+    ]);
+
+    // Add stock to the destination warehouse
+    InventoryTransaction::create([
+        'product_id'       => $product->id,
+        'warehouse_id'     => $validated['to_warehouse_id'],
+        'type'             => 'in',
+        'quantity'         => $validated['quantity'],
+        'unit_price'       => $product->cost,
+        'reference_number' => 'Transfer-' . now()->timestamp,
+        'date'             => $validated['date'],
+    ]);
+
+    // Optionally, you might update quantities per warehouse in a pivot table if you manage stock per warehouse separately.
+
+    return redirect()->back()->with('success', 'Stock transferred successfully.');
+}
+
+
 }

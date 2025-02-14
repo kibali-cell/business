@@ -120,8 +120,11 @@
                     <li class="nav-item">
                         <a class="nav-link" href="{{ route('warehouses.index') }}">Warehouses</a>
                     </li>
-                    <li class="nav-item">
+                    <!-- <li class="nav-item">
                         <a class="nav-link" href="{{ route('inventory.reports') }}">Reports</a>
+                    </li> -->
+                    <li class="nav-item">
+                        <a class="nav-link" href="{{ route('inventory.valuation') }}">Valuations</a>
                     </li>
                 </ul>
             </div>

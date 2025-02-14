@@ -55,10 +55,16 @@ class PurchaseOrderController extends Controller
             'total_amount'=> 'required|numeric|min:0',
             'status'      => 'required|string',
         ]);
-
+    
         $purchaseOrder->update($validated);
+    
+        // Optionally, trigger a notification:
+        // Notification::send($purchaseOrder->supplier, new PurchaseOrderUpdated($purchaseOrder));
+    
         return redirect()->route('purchase_orders.index')->with('success', 'Purchase order updated successfully.');
     }
+    
+
 
     public function destroy(PurchaseOrder $purchaseOrder)
     {

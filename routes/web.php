@@ -142,6 +142,7 @@ Route::middleware('auth')->group(function () {
     // Inventory Routes
     Route::prefix('inventory')->name('inventory.')->group(function () {
         // Place the reports route first (since it's a static route)
+        Route::get('/valuation', [InventoryController::class, 'valuation'])->name('valuation');
         Route::get('/reports', [InventoryController::class, 'reports'])->name('reports');
 
         // Then define the other routes
@@ -157,6 +158,8 @@ Route::middleware('auth')->group(function () {
 
         // Record a transaction (stock in/out)
         Route::post('/{product}/transactions', [InventoryController::class, 'recordTransaction'])->name('recordTransaction');
+
+        Route::post('/{product}/transfer', [InventoryController::class, 'transferStock'])->name('transferStock');
     });
 
 
