@@ -29,12 +29,12 @@
 
         <!-- Tasks Section -->
         <li class="nav-item">
-            <a class="nav-link" data-bs-toggle="collapse" href="#charts" aria-expanded="false" aria-controls="charts">
+            <a class="nav-link" data-bs-toggle="collapse" href="#tasks" aria-expanded="false" aria-controls="tasks">
                 <i class="menu-icon mdi mdi-chart-line"></i>
                 <span class="menu-title">Tasks</span>
                 <i class="menu-arrow"></i>
             </a>
-            <div class="collapse" id="charts">
+            <div class="collapse" id="tasks">
                 <ul class="nav flex-column sub-menu">
                     <li class="nav-item">
                         <a class="nav-link" href="{{ route('crm.tasks.index') }}">Tasks</a>
@@ -67,12 +67,12 @@
 
         <!-- Finances Section -->
         <li class="nav-item">
-            <a class="nav-link" data-bs-toggle="collapse" href="#tables" aria-expanded="false" aria-controls="tables">
+            <a class="nav-link" data-bs-toggle="collapse" href="#finances" aria-expanded="false" aria-controls="finances">
                 <i class="menu-icon mdi mdi-table"></i>
                 <span class="menu-title">Finances</span>
                 <i class="menu-arrow"></i>
             </a>
-            <div class="collapse" id="tables">
+            <div class="collapse" id="finances">
                 <ul class="nav flex-column sub-menu">
                     <li class="nav-item">
                         <a class="nav-link" href="{{ route('finance.accounts.index') }}">Accounts</a>
@@ -99,52 +99,36 @@
             </div>
         </li>
 
-        <!-- Other Sections (Icons, User Pages, Documentation) -->
+        <!-- Inventory Section -->
         <li class="nav-item">
-            <a class="nav-link" data-bs-toggle="collapse" href="#icons" aria-expanded="false" aria-controls="icons">
+            <a class="nav-link" data-bs-toggle="collapse" href="#inventory" aria-expanded="false" aria-controls="inventory">
                 <i class="menu-icon mdi mdi-layers-outline"></i>
-                <span class="menu-title">Icons</span>
+                <span class="menu-title">Inventory</span>
                 <i class="menu-arrow"></i>
             </a>
-            <div class="collapse" id="icons">
+            <div class="collapse" id="inventory">
                 <ul class="nav flex-column sub-menu">
                     <li class="nav-item">
-                        <a class="nav-link" href="pages/icons/font-awesome.html">Font Awesome</a>
+                        <a class="nav-link" href="{{ route('inventory.index') }}">Inventory Dashboard</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{{ route('purchase_orders.index') }}">Purchase Orders</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{{ route('suppliers.index') }}">Suppliers</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{{ route('warehouses.index') }}">Warehouses</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{{ route('inventory.reports') }}">Reports</a>
                     </li>
                 </ul>
             </div>
         </li>
-        <li class="nav-item">
-            <a class="nav-link" data-bs-toggle="collapse" href="#auth" aria-expanded="false" aria-controls="auth">
-                <i class="menu-icon mdi mdi-account-circle-outline"></i>
-                <span class="menu-title">User Pages</span>
-                <i class="menu-arrow"></i>
-            </a>
-            <div class="collapse" id="auth">
-                <ul class="nav flex-column sub-menu">
-                    <li class="nav-item">
-                        <a class="nav-link" href="home/pages/samples/blank-page.html">Blank Page</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="home/pages/samples/error-404.html">404</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="home/pages/samples/error-500.html">500</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="home/pages/samples/login.html">Login</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="home/pages/samples/register.html">Register</a>
-                    </li>
-                </ul>
-            </div>
-        </li>
-        <li class="nav-item">
-            <a class="nav-link" href="docs/documentation.html">
-                <i class="menu-icon mdi mdi-file-document"></i>
-                <span class="menu-title">Documentation</span>
-            </a>
-        </li>
+
+        <!-- Other Sections -->
+        <!-- (Add additional sections as needed.) -->
+
     </ul>
 </nav>

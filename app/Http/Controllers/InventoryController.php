@@ -1,6 +1,7 @@
 <?php
 
 namespace App\Http\Controllers;
+use Illuminate\Support\Facades\DB;
 
 use App\Models\Product;
 use App\Models\InventoryTransaction;
@@ -114,4 +115,14 @@ class InventoryController extends Controller
 
         return redirect()->route('inventory.show', $product->id)->with('success', 'Transaction recorded successfully.');
     }
+
+    
+    public function reports()
+    {
+        $lowStockProducts = Product::whereColumn('quantity', '<', 'reorder_point')->get();
+        $inventoryValue = Product::sum(DB::raw('cost * quantity'));
+
+        return view('inventory.reports', compact('lowStockProducts', 'inventoryValue'));
+    }
+
 }
