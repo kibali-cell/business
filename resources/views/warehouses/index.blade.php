@@ -154,41 +154,41 @@
   </div>
 </div>
 
-<!-- View Warehouse Modal (Looped for each warehouse) -->
+<!-- View Warehouse Modals -->
 @foreach($warehouses as $warehouse)
-  <div class="modal fade" id="viewWarehouseModal{{ $warehouse->id }}" tabindex="-1" aria-labelledby="viewWarehouseModalLabel{{ $warehouse->id }}" aria-hidden="true">
-    <div class="modal-dialog">
-      <div class="modal-content">
-        <div class="modal-header">
-          <h5 class="modal-title" id="viewWarehouseModalLabel{{ $warehouse->id }}">Warehouse Details</h5>
-          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-        </div>
-        <div class="modal-body">
-          <table class="table table-bordered">
-            <tr>
-              <th>Name</th>
-              <td>{{ $warehouse->name }}</td>
-            </tr>
-            <tr>
-              <th>Location</th>
-              <td>{{ $warehouse->location }}</td>
-            </tr>
-            <tr>
-              <th>Capacity</th>
-              <td>{{ $warehouse->capacity }}</td>
-            </tr>
-            <tr>
-              <th>Manager ID</th>
-              <td>{{ $warehouse->manager_id }}</td>
-            </tr>
-          </table>
-        </div>
-        <div class="modal-footer">
-          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-        </div>
+<div class="modal fade" id="viewWarehouseModal{{ $warehouse->id }}" tabindex="-1" aria-labelledby="viewWarehouseModalLabel{{ $warehouse->id }}" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="viewWarehouseModalLabel{{ $warehouse->id }}">Warehouse Details</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        <table class="table table-bordered">
+          <tr>
+            <th>Name</th>
+            <td>{{ $warehouse->name }}</td>
+          </tr>
+          <tr>
+            <th>Location</th>
+            <td>{{ $warehouse->location }}</td>
+          </tr>
+          <tr>
+            <th>Capacity</th>
+            <td>{{ $warehouse->capacity }}</td>
+          </tr>
+          <tr>
+            <th>Manager ID</th>
+            <td>{{ $warehouse->manager_id }}</td>
+          </tr>
+        </table>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
       </div>
     </div>
   </div>
+</div>
 @endforeach
 
 @include('home.script')
@@ -215,4 +215,3 @@ document.addEventListener('DOMContentLoaded', function () {
     });
 });
 </script>
-@endsection

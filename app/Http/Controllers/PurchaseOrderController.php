@@ -11,8 +11,11 @@ class PurchaseOrderController extends Controller
     public function index()
     {
         $orders = PurchaseOrder::with('supplier')->orderBy('order_date', 'desc')->paginate(15);
-        return view('purchase_orders.index', compact('orders'));
+        // Load all suppliers to populate the dropdown in the modal
+        $suppliers = Supplier::all();
+        return view('purchase_orders.index', compact('orders', 'suppliers'));
     }
+
 
     public function create()
     {
