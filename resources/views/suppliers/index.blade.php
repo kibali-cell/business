@@ -12,108 +12,72 @@
       <div class="container-fluid page-body-wrapper">
         <!-- partial:partials/_sidebar.html -->
         @include('home.sidebar')
-        <!-- partial -->
 <div class="container my-4">
-    <h1 class="mb-4">Suppliers</h1>
+  <h1 class="mb-4">Suppliers</h1>
 
-    @if(session('success'))
-        <div class="alert alert-success alert-dismissible fade show" role="alert">
-            {{ session('success') }}
-            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-        </div>
-    @endif
-
-    <!-- Button to trigger Create Supplier Modal -->
-    <button class="btn btn-primary mb-3" data-bs-toggle="modal" data-bs-target="#createSupplierModal">
-        <i class="mdi mdi-plus-circle me-2"></i> Add New Supplier
-    </button>
-
-    <!-- Suppliers Table -->
-    <div class="table-responsive">
-        <table class="table table-bordered">
-            <thead>
-                <tr>
-                    <th>Name</th>
-                    <th>Email</th>
-                    <th>Phone</th>
-                    <th>Address</th>
-                    <th>Actions</th>
-                </tr>
-            </thead>
-            <tbody>
-                @foreach($suppliers as $supplier)
-                <tr>
-                    <td>{{ $supplier->name }}</td>
-                    <td>{{ $supplier->email }}</td>
-                    <td>{{ $supplier->phone }}</td>
-                    <td>{{ $supplier->address }}</td>
-                    <td>
-                        <!-- View Button triggers the View Supplier Modal -->
-                        <button class="btn btn-sm btn-info" data-bs-toggle="modal" data-bs-target="#viewSupplierModal{{ $supplier->id }}">
-                            <i class="mdi mdi-eye"></i>
-                        </button>
-
-                        <!-- Edit Button triggers the Edit Supplier Modal -->
-                        <button class="btn btn-sm btn-warning" data-bs-toggle="modal" data-bs-target="#editSupplierModal"
-                                data-supplier-id="{{ $supplier->id }}"
-                                data-name="{{ $supplier->name }}"
-                                data-email="{{ $supplier->email }}"
-                                data-phone="{{ $supplier->phone }}"
-                                data-address="{{ $supplier->address }}">
-                            <i class="mdi mdi-pencil"></i>
-                        </button>
-
-                        <!-- Delete Form -->
-                        <form action="{{ route('suppliers.destroy', $supplier->id) }}" method="POST" class="d-inline">
-                            @csrf
-                            @method('DELETE')
-                            <button onclick="return confirm('Are you sure?')" class="btn btn-sm btn-danger">
-                                <i class="mdi mdi-delete"></i>
-                            </button>
-                        </form>
-                    </td>
-                </tr>
-                <!-- View Supplier Modal -->
-                <div class="modal fade" id="viewSupplierModal{{ $supplier->id }}" tabindex="-1" aria-labelledby="viewSupplierModalLabel{{ $supplier->id }}" aria-hidden="true">
-                  <div class="modal-dialog">
-                    <div class="modal-content">
-                      <div class="modal-header">
-                        <h5 class="modal-title" id="viewSupplierModalLabel{{ $supplier->id }}">Supplier Details</h5>
-                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                      </div>
-                      <div class="modal-body">
-                        <table class="table table-bordered">
-                          <tr>
-                            <th>Name</th>
-                            <td>{{ $supplier->name }}</td>
-                          </tr>
-                          <tr>
-                            <th>Email</th>
-                            <td>{{ $supplier->email }}</td>
-                          </tr>
-                          <tr>
-                            <th>Phone</th>
-                            <td>{{ $supplier->phone }}</td>
-                          </tr>
-                          <tr>
-                            <th>Address</th>
-                            <td>{{ $supplier->address }}</td>
-                          </tr>
-                        </table>
-                      </div>
-                      <div class="modal-footer">
-                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-                <!-- End View Supplier Modal -->
-                @endforeach
-            </tbody>
-        </table>
+  @if(session('success'))
+    <div class="alert alert-success alert-dismissible fade show" role="alert">
+      {{ session('success') }}
+      <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
     </div>
+  @endif
 
-    {!! $suppliers->links() !!}
+  <!-- Button to trigger Create Supplier Modal -->
+  <button class="btn btn-primary mb-3" data-bs-toggle="modal" data-bs-target="#createSupplierModal">
+    <i class="mdi mdi-plus-circle me-2"></i> Add New Supplier
+  </button>
+
+  <!-- Suppliers Table -->
+  <div class="table-responsive">
+    <table class="table table-bordered">
+      <thead>
+        <tr>
+          <th>Name</th>
+          <th>Email</th>
+          <th>Phone</th>
+          <th>Address</th>
+          <th>Actions</th>
+        </tr>
+      </thead>
+      <tbody>
+        @foreach($suppliers as $supplier)
+          <tr>
+            <td>{{ $supplier->name }}</td>
+            <td>{{ $supplier->email }}</td>
+            <td>{{ $supplier->phone }}</td>
+            <td>{{ $supplier->address }}</td>
+            <td>
+              <!-- View Button: triggers the corresponding modal -->
+              <button class="btn btn-sm btn-info" data-bs-toggle="modal" data-bs-target="#viewSupplierModal{{ $supplier->id }}">
+                <i class="mdi mdi-eye"></i>
+              </button>
+
+              <!-- Edit Button: triggers the Edit Supplier Modal -->
+              <button class="btn btn-sm btn-warning" data-bs-toggle="modal" data-bs-target="#editSupplierModal"
+                      data-supplier-id="{{ $supplier->id }}"
+                      data-name="{{ $supplier->name }}"
+                      data-email="{{ $supplier->email }}"
+                      data-phone="{{ $supplier->phone }}"
+                      data-address="{{ $supplier->address }}">
+                <i class="mdi mdi-pencil"></i>
+              </button>
+
+              <!-- Delete Form -->
+              <form action="{{ route('suppliers.destroy', $supplier->id) }}" method="POST" class="d-inline">
+                @csrf
+                @method('DELETE')
+                <button onclick="return confirm('Are you sure?')" class="btn btn-sm btn-danger">
+                  <i class="mdi mdi-delete"></i>
+                </button>
+              </form>
+            </td>
+          </tr>
+        @endforeach
+      </tbody>
+    </table>
+  </div>
+
+  {!! $suppliers->links() !!}
 </div>
 
 <!-- Create Supplier Modal -->
@@ -190,6 +154,43 @@
     </div>
   </div>
 </div>
+
+<!-- View Supplier Modals: Place these after the main container so they don't display inline -->
+@foreach($suppliers as $supplier)
+<div class="modal fade" id="viewSupplierModal{{ $supplier->id }}" tabindex="-1" aria-labelledby="viewSupplierModalLabel{{ $supplier->id }}" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="viewSupplierModalLabel{{ $supplier->id }}">Supplier Details</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        <table class="table table-bordered">
+          <tr>
+            <th>Name</th>
+            <td>{{ $supplier->name }}</td>
+          </tr>
+          <tr>
+            <th>Email</th>
+            <td>{{ $supplier->email }}</td>
+          </tr>
+          <tr>
+            <th>Phone</th>
+            <td>{{ $supplier->phone }}</td>
+          </tr>
+          <tr>
+            <th>Address</th>
+            <td>{{ $supplier->address }}</td>
+          </tr>
+        </table>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+      </div>
+    </div>
+  </div>
+</div>
+@endforeach
 
 @include('home.script')
 

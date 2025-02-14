@@ -12,7 +12,6 @@
       <div class="container-fluid page-body-wrapper">
         <!-- partial:partials/_sidebar.html -->
         @include('home.sidebar')
-        <!-- partial -->
 <div class="container my-4">
   <h1 class="mb-4">Purchase Orders</h1>
 
@@ -48,7 +47,11 @@
           <td>${{ number_format($order->total_amount, 2) }}</td>
           <td>{{ ucfirst($order->status) }}</td>
           <td>
-            <a href="{{ route('purchase_orders.show', $order->id) }}" class="btn btn-sm btn-info"><i class="mdi mdi-eye"></i></a>
+            <!-- View Button triggers the modal below -->
+            <button class="btn btn-sm btn-info" data-bs-toggle="modal" data-bs-target="#viewPOModal{{ $order->id }}">
+              <i class="mdi mdi-eye"></i>
+            </button>
+            <!-- Edit Button triggers the Edit Modal -->
             <button class="btn btn-sm btn-warning" data-bs-toggle="modal" data-bs-target="#editPOModal"
                     data-order-id="{{ $order->id }}"
                     data-supplier-id="{{ $order->supplier_id }}"
@@ -57,6 +60,7 @@
                     data-status="{{ $order->status }}">
               <i class="mdi mdi-pencil"></i>
             </button>
+            <!-- Delete Form -->
             <form action="{{ route('purchase_orders.destroy', $order->id) }}" method="POST" class="d-inline">
               @csrf
               @method('DELETE')
@@ -168,6 +172,43 @@
     </div>
   </div>
 </div>
+
+<!-- View Purchase Order Modals -->
+@foreach($orders as $order)
+<div class="modal fade" id="viewPOModal{{ $order->id }}" tabindex="-1" aria-labelledby="viewPOModalLabel{{ $order->id }}" aria-hidden="true">
+  <div class="modal-dialog modal-lg">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="viewPOModalLabel{{ $order->id }}">Purchase Order Details</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        <table class="table table-bordered">
+          <tr>
+            <th>Order Date</th>
+            <td>{{ \Carbon\Carbon::parse($order->order_date)->format('Y-m-d') }}</td>
+          </tr>
+          <tr>
+            <th>Supplier</th>
+            <td>{{ $order->supplier->name }}</td>
+          </tr>
+          <tr>
+            <th>Total Amount</th>
+            <td>${{ number_format($order->total_amount, 2) }}</td>
+          </tr>
+          <tr>
+            <th>Status</th>
+            <td>{{ ucfirst($order->status) }}</td>
+          </tr>
+        </table>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+      </div>
+    </div>
+  </div>
+</div>
+@endforeach
 
 @include('home.script')
 
