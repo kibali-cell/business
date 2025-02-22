@@ -21,7 +21,8 @@
                 <div class="card-header d-flex justify-content-between align-items-center">
                     <h5>Folders</h5>
                     <button class="btn btn-sm btn-primary" data-bs-toggle="modal" data-bs-target="#newFolderModal">
-                        <i class="fas fa-plus"></i>
+                       
+                        <i class="">+</i>
                     </button>
                 </div>
                 <div class="card-body">
@@ -37,7 +38,7 @@
                     <h5>Documents</h5>
                     <div>
                         <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#uploadModal">
-                            <i class="fas fa-upload me-2"></i>Upload Document
+                            Upload Document
                         </button>
                     </div>
                 </div>

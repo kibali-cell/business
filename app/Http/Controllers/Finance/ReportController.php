@@ -110,7 +110,7 @@ class ReportController extends Controller
             ];
         });
 
-        return view('finance.reports.dashboard', compact(
+        return view('home.body', compact(
             'totalRevenue',
             'revenueGrowth',
             'outstandingReceivables',
