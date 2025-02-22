@@ -80,7 +80,7 @@ The application follows a **modular, service-oriented architecture** for flexibi
 - **Database:** Manages budgets with `allocated` and `actual` fields, calculating variance dynamically.  
 - **Features:** Modal-driven CRUD operations for seamless budget management.  
 - **Screenshot:**  
-  ![Budget Dashboard](images/budget-dashboard.png)  
+  ![Budget Dashboard](images/budget.png)  
   *Caption: Viewing budget details and variance in the dashboard.*
 
 ### Inventory Management
